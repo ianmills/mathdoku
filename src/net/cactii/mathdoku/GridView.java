@@ -17,6 +17,7 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.Button;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -30,6 +31,7 @@ public class GridView extends View implements OnTouchListener  {
   private OnSolvedListener mSolvedListener;
   // Touched listener
   public OnGridTouchListener mTouchedListener;
+    Button digits[];
 
   // Size of the grid
   public int mGridSize;
@@ -464,7 +466,14 @@ public boolean mBadMaths;
     if (this.mSelectedCell != cell)
     	this.playSoundEffect(SoundEffectConstants.CLICK);
     this.mSelectedCell = cell;
-    
+    for (int i=1;i<=9;i++) {
+        if (mSelectedCell.mPossibles.contains(i)) {
+            this.digits[i-1].setPressed(true);
+        } else {
+            this.digits[i-1].setPressed(false);
+        }
+    }
+
     float[] cellPos = this.CellToCoord(cell.mCellNumber);
     this.mTrackPosX = cellPos[0];
     this.mTrackPosY = cellPos[1];

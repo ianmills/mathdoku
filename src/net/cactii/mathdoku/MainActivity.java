@@ -36,6 +36,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.Button;
+import android.widget.ToggleButton;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -88,6 +89,7 @@ public class MainActivity extends Activity {
         digits[6] = (Button)findViewById(R.id.digitSelect7);
         digits[7] = (Button)findViewById(R.id.digitSelect8);
         digits[8] = (Button)findViewById(R.id.digitSelect9);
+        this.kenKenGrid.digits = digits;
         this.clearDigit = (Button)findViewById(R.id.clearButton);
         this.maybeButton = (CheckBox)findViewById(R.id.maybeButton);
        
@@ -148,19 +150,24 @@ public class MainActivity extends Activity {
     			@Override
     			public void puzzleSolved() {
     				// TODO Auto-generated method stub
-    				if (kenKenGrid.mActive)
-    					animText(R.string.main_ui_solved_messsage, 0xFF002F00);
+    				if (kenKenGrid.mActive) {
+                        Toast.makeText(MainActivity.this, R.string.main_ui_solved_messsage, Toast.LENGTH_SHORT).show();
+//    					animText(R.string.main_ui_solved_messsage, 0xFF002F00);
+                    }
     				MainActivity.this.controls.setVisibility(View.GONE);
     				MainActivity.this.pressMenu.setVisibility(View.VISIBLE);
     			}
         });
         
         for (int i = 0; i<digits.length; i++)
-        	this.digits[i].setOnClickListener(new OnClickListener() {
-        		public void onClick(View v) {
+        	this.digits[i].setOnTouchListener(new OnTouchListener() {
+        		public boolean onTouch(View v, MotionEvent event) {
         			// Convert text of button (number) to Integer
-        			int d = Integer.parseInt(((Button)v).getText().toString());
-        			MainActivity.this.digitSelected(d);
+                    if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                        int d = Integer.parseInt(((Button)v).getText().toString());
+                        MainActivity.this.digitSelected(d);
+                    }
+                    return true;
         		}
         	});
         this.clearDigit.setOnClickListener(new OnClickListener() {
@@ -420,15 +427,19 @@ public class MainActivity extends Activity {
     		this.kenKenGrid.mSelectedCell.setUserValue(0);
     	}
     	else {
-        	if (this.maybeButton.isChecked()) {
-        		if (kenKenGrid.mSelectedCell.isUserValueSet())
-            		this.kenKenGrid.mSelectedCell.clearUserValue();
-    			this.kenKenGrid.mSelectedCell.togglePossible(value);
-        	}
-        	else {
-        		this.kenKenGrid.mSelectedCell.setUserValue(value);
-    			this.kenKenGrid.mSelectedCell.mPossibles.clear();
-        	}
+            if (kenKenGrid.mSelectedCell.isUserValueSet())
+                this.kenKenGrid.mSelectedCell.clearUserValue();
+            this.kenKenGrid.mSelectedCell.togglePossible(value);
+            for (int i=1;i<=9;i++) {
+                if (this.kenKenGrid.mSelectedCell.mPossibles.contains(i)) {
+                    this.digits[i-1].setPressed(true);
+                } else {
+                    this.digits[i-1].setPressed(false);
+                }
+            }
+            if (this.kenKenGrid.mSelectedCell.mPossibles.size() == 1) {
+                this.kenKenGrid.mSelectedCell.setUserValue(this.kenKenGrid.mSelectedCell.mPossibles.get(0));
+            }
     	}
     	if (this.preferences.getBoolean("hideselector", false))
     		this.controls.setVisibility(View.GONE);

@@ -201,7 +201,6 @@ public class GridCell {
   }
 
   public void setUserValue(int digit) {
-	  this.mPossibles.clear();
 	  this.mUserValue = digit;
 	  mInvalidHighlight = false;
   }
@@ -330,7 +329,7 @@ public class GridCell {
       // canvas.drawText(this.mCageText, this.mPosX + 2, this.mPosY + 13, this.mCageTextPaint);
     }
     
-    if (mPossibles.size()>0) {
+    if (mPossibles.size()>1) {
     	Activity activity = mContext.mContext;
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
     	if (prefs.getBoolean("maybe3x3", true)) {
