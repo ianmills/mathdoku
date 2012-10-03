@@ -17,7 +17,6 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
 	<string name="menu_newgame">Nieuw Spel</string>
 	<string name="menu_saveload">Opslaan/Laden</string>
 	<string name="menu_checkprogress">Controleer Voortgang</string>
-	<string name="menu_solve">Oplossen</string>
 	<string name="menu_options">Opties</string>
 	<string name="menu_help">Help</string>
 	<string name="menu_changes">Aanpassingen</string>
