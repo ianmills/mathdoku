@@ -49,7 +49,7 @@ redistribute and/or modify this translation yourself under the terms of the GNU 
 	<string name="option_sound_effects_summary">Zet de geluidseffecten aan</string>
 	<string name="option_wake_lock_title">Houd scherm aan</string>
 	<string name="option_wake_lock_summary">Zorgt er voor dat het scherm niet uit gaat tijdens het spelen</string>
-	<string name="main_ui_maybe">Mogelijk</string>
+	<string name="main_ui_all">Alle</string>
 	<string name="main_ui_clear">Leeg</string>
 	<string name="main_ui_solved_messsage">Opgelost!</string>
 	<string name="main_ui_cheat_messsage">Valsspeler! :P</string>

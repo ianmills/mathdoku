@@ -146,18 +146,12 @@
 	    android:layout_gravity="center"
 	    android:background="#00000000"
 	    >
-	    <TextView
-	    	android:layout_width="wrap_content"
+		<Button android:id="@+id/allButton"
+			android:layout_width="75dp"
 			android:layout_height="wrap_content"
-			android:textColor="#FF000000"
-			android:textStyle="bold"
-			android:text="@string/main_ui_maybe"
-			/>
-	    <CheckBox android:id="@+id/maybeButton"
-	    	android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginRight="35dp"
-			/>
+			android:text="@string/main_ui_all"
+		/>
+
 		<Button android:id="@+id/clearButton"
 			android:layout_width="75dp"
 			android:layout_height="wrap_content"

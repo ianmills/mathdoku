@@ -71,8 +71,8 @@
 	<!-- The title and summary of the "wake lock" option. This option highlights cells with digits already in the row or column. -->
 	<string name="option_wake_lock_title">Keep screen on</string>
 	<string name="option_wake_lock_summary">Prevent the screen from going off while playing</string>
-	<!-- The text before the "maybe" checkbox in the main UI. -->
-	<string name="main_ui_maybe">Maybe</string>
+	<!-- The text on the all button in the main UI. -->
+	<string name="main_ui_all">All</string>
 	<!-- The text on the clear button in the main UI. -->
 	<string name="main_ui_clear">Clear</string>
 	<!-- The message that appears when the player has solved the puzzle. -->

@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
     LinearLayout controls;
     Button digits[] = new Button[9];
     Button clearDigit;
-    CheckBox maybeButton;
+    Button allDigit;
     View[] sound_effect_views;
 	private Animation outAnimation;
 	private Animation solvedAnimation;
@@ -91,11 +91,11 @@ public class MainActivity extends Activity {
         digits[8] = (Button)findViewById(R.id.digitSelect9);
         this.kenKenGrid.digits = digits;
         this.clearDigit = (Button)findViewById(R.id.clearButton);
-        this.maybeButton = (CheckBox)findViewById(R.id.maybeButton);
+        this.allDigit = (Button)findViewById(R.id.allButton);
        
         this.sound_effect_views = new View[] { this.kenKenGrid, this.digits[0], this.digits[1],
         		this.digits[2], this.digits[3], this.digits[4], this.digits[5], this.digits[6], this.digits[7], this.digits[8],
-        		this.clearDigit, this.maybeButton
+        		this.clearDigit, this.allDigit
         };
 
         solvedAnimation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.solvedanim);
@@ -125,9 +125,6 @@ public class MainActivity extends Activity {
 						controls.startAnimation(outAnimation);
 						//cell.mSelected = false;
 						kenKenGrid.mSelectorShown = false;
-			    	} else {
-						//maybeButton.setChecked((cell.mPossibles.size() > 0));
-						controls.requestFocus();
 			    	}
 					kenKenGrid.requestFocus();
 				} else {
@@ -137,7 +134,6 @@ public class MainActivity extends Activity {
 						controls.startAnimation(animation);
 						kenKenGrid.mSelectorShown = true;
 			    	}
-					//maybeButton.setChecked((cell.mPossibles.size() > 0));
 					controls.requestFocus();
 				}
 			}
@@ -175,16 +171,10 @@ public class MainActivity extends Activity {
 				MainActivity.this.digitSelected(0);
 			}
         });
-        
-        this.maybeButton.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_UP)
-					v.playSoundEffect(SoundEffectConstants.CLICK);
-				return false;
+        this.allDigit.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				MainActivity.this.digitSelected(-1);
 			}
-        	
         });
         
         newVersionCheck();
@@ -228,6 +218,16 @@ public class MainActivity extends Activity {
 	    	this.controls.setVisibility(View.VISIBLE);
 	    }
 	    this.setSoundEffectsEnabled(this.preferences.getBoolean("soundeffects", true));
+		if (this.kenKenGrid.mSelectedCell != null) {
+			for (int i=1;i<=9;i++) {
+				if (this.kenKenGrid.mSelectedCell.mPossibles.contains(i)) {
+					this.digits[i-1].setPressed(true);
+				} else {
+					this.digits[i-1].setPressed(false);
+				}
+			}
+		}
+
 	    super.onResume();
 	}
     
@@ -425,22 +425,26 @@ public class MainActivity extends Activity {
     	if (value == 0) {	// Clear Button
 			this.kenKenGrid.mSelectedCell.mPossibles.clear();
     		this.kenKenGrid.mSelectedCell.setUserValue(0);
-    	}
-    	else {
+    	} else if (value == -1) { //all button
+			for (int i=1;i<=kenKenGrid.mGridSize; i++) {
+				this.kenKenGrid.mSelectedCell.mPossibles.add(i);
+			}
+		} else {
             if (kenKenGrid.mSelectedCell.isUserValueSet())
                 this.kenKenGrid.mSelectedCell.clearUserValue();
             this.kenKenGrid.mSelectedCell.togglePossible(value);
-            for (int i=1;i<=9;i++) {
-                if (this.kenKenGrid.mSelectedCell.mPossibles.contains(i)) {
-                    this.digits[i-1].setPressed(true);
-                } else {
-                    this.digits[i-1].setPressed(false);
-                }
-            }
             if (this.kenKenGrid.mSelectedCell.mPossibles.size() == 1) {
                 this.kenKenGrid.mSelectedCell.setUserValue(this.kenKenGrid.mSelectedCell.mPossibles.get(0));
             }
     	}
+		for (int i=1;i<=9;i++) {
+			if (this.kenKenGrid.mSelectedCell.mPossibles.contains(i)) {
+				this.digits[i-1].setPressed(true);
+			} else {
+				this.digits[i-1].setPressed(false);
+			}
+		}
+
     	if (this.preferences.getBoolean("hideselector", false))
     		this.controls.setVisibility(View.GONE);
     	// this.kenKenGrid.mSelectedCell.mSelected = false;
