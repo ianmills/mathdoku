@@ -41,6 +41,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.R.style;
 
 public class MainActivity extends Activity {
     public GridView kenKenGrid;
@@ -204,9 +205,8 @@ public class MainActivity extends Activity {
 	    if (this.preferences.getBoolean("wakelock", true))
 	        this.wakeLock.acquire();
 	    if (this.preferences.getBoolean("alternatetheme", true)) {
-	    	//this.topLayout.setBackgroundDrawable(null);
-	    	this.topLayout.setBackgroundResource(R.drawable.background);
-	    	//this.topLayout.setBackgroundColor(0xFFA0A0CC);
+            this.topLayout.setBackgroundDrawable(null);
+//	    	this.topLayout.setBackgroundColor(0xFFA0A0CC);
 	    	this.kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
 	    } else {
 	    	this.topLayout.setBackgroundResource(R.drawable.background);
@@ -459,10 +459,10 @@ public class MainActivity extends Activity {
         public void run() {
         	MainActivity.this.dismissDialog(0);
     	    if (MainActivity.this.preferences.getBoolean("alternatetheme", true)) {
-    	    	//MainActivity.this.topLayout.setBackgroundDrawable(null);
-    	    	//MainActivity.this.topLayout.setBackgroundColor(0xFFA0A0CC);
-    	    	MainActivity.this.topLayout.setBackgroundResource(R.drawable.background);
-    	    	MainActivity.this.kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
+    	    	MainActivity.this.topLayout.setBackgroundDrawable(null);
+//    	    	MainActivity.this.topLayout.setBackgroundColor(0xFFA0A0CC);
+//    	    	MainActivity.this.topLayout.setBackgroundResource(R.drawable.background);
+                MainActivity.this.kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
     	    } else {
     	    	MainActivity.this.topLayout.setBackgroundResource(R.drawable.background);
     	    	MainActivity.this.kenKenGrid.setTheme(GridView.THEME_CARVED);
