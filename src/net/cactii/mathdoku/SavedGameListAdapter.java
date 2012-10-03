@@ -84,7 +84,7 @@ public class SavedGameListAdapter extends BaseAdapter {
 //				convertView.findViewById(R.id.wordRow).setBackgroundDrawable(null);
 //				convertView.findViewById(R.id.wordRow).setBackgroundColor(0xFFA0A0CC);
 //			} else {
-				convertView.findViewById(R.id.wordRow).setBackgroundResource(R.drawable.background1);
+				//convertView.findViewById(R.id.wordRow).setBackgroundResource(R.drawable.background1);
 //			}
 			
 			final Button saveCurrent = (Button)convertView.findViewById(R.id.saveCurrent);

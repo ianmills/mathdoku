@@ -18,20 +18,21 @@
                   android:title="@string/grid_size_9" />
         </menu>
     </item>
-	<item android:title="@string/menu_saveload"
-	  	  android:id="@+id/saveload"
-	  	  android:icon="@drawable/menu_saveload">
-	</item>
-	<item android:title="@string/menu_checkprogress"
-		  android:id="@+id/checkprogress"
-		  android:icon="@drawable/menu_solve">
-	</item>
-	<item android:id="@+id/options"
-	  	  android:icon="@drawable/menu_options"
-	  	  android:title="@string/menu_options">
-	</item>
-	<item android:id="@+id/help"
-		  android:title="@string/menu_help"
-		  android:icon="@drawable/menu_help">
-	</item>
+    <item android:title="@string/menu_saveload"
+          android:id="@+id/saveload"
+          android:icon="@drawable/menu_saveload">
+    </item>
+    <item android:title="@string/menu_checkprogress"
+          android:id="@+id/checkprogress"
+          android:showAsAction="ifRoom"
+          android:icon="@drawable/menu_solve">
+    </item>
+    <item android:id="@+id/options"
+          android:icon="@drawable/menu_options"
+          android:title="@string/menu_options">
+    </item>
+    <item android:id="@+id/help"
+          android:title="@string/menu_help"
+          android:icon="@drawable/menu_help">
+    </item>
 </menu>
