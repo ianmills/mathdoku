@@ -39,6 +39,7 @@ import android.widget.Button;
 import android.widget.ToggleButton;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.R.style;
@@ -55,6 +56,7 @@ public class MainActivity extends Activity {
     Button clearDigit;
     Button allDigit;
     View[] sound_effect_views;
+    private GridLayout numpad;
 	private Animation outAnimation;
 	private Animation solvedAnimation;
 	
@@ -80,15 +82,12 @@ public class MainActivity extends Activity {
         this.kenKenGrid.animText = this.solvedText;
         this.pressMenu = (TextView)findViewById(R.id.pressMenu);
         this.controls = (LinearLayout)findViewById(R.id.controls);
-        digits[0] = (Button)findViewById(R.id.digitSelect1);
-        digits[1] = (Button)findViewById(R.id.digitSelect2);
-        digits[2] = (Button)findViewById(R.id.digitSelect3);
-        digits[3] = (Button)findViewById(R.id.digitSelect4);
-        digits[4] = (Button)findViewById(R.id.digitSelect5);
-        digits[5] = (Button)findViewById(R.id.digitSelect6);
-        digits[6] = (Button)findViewById(R.id.digitSelect7);
-        digits[7] = (Button)findViewById(R.id.digitSelect8);
-        digits[8] = (Button)findViewById(R.id.digitSelect9);
+        numpad = (GridLayout)findViewById(R.id.digits);
+        for (int i=0;i<9;i++) {
+            digits[i] = new Button(this);
+            digits[i].setText(Integer.toString(i+1));
+            numpad.addView(digits[i]);
+        }
         this.kenKenGrid.digits = digits;
         this.clearDigit = (Button)findViewById(R.id.clearButton);
         this.allDigit = (Button)findViewById(R.id.allButton);
