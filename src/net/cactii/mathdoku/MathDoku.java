@@ -44,7 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.R.style;
 
-public class MainActivity extends Activity {
+public class MathDoku extends Activity {
     public GridView kenKenGrid;
     TextView solvedText;
     TextView pressMenu;
@@ -97,7 +97,7 @@ public class MainActivity extends Activity {
         		this.clearDigit, this.allDigit
         };
 
-        solvedAnimation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.solvedanim);
+        solvedAnimation = AnimationUtils.loadAnimation(MathDoku.this, R.anim.solvedanim);
         solvedAnimation.setAnimationListener(new AnimationListener() {
             public void onAnimationEnd(Animation animation) {
               solvedText.setVisibility(View.GONE);
@@ -106,7 +106,7 @@ public class MainActivity extends Activity {
             public void onAnimationStart(Animation animation) {}
           });
         
-        outAnimation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.selectorzoomout);
+        outAnimation = AnimationUtils.loadAnimation(MathDoku.this, R.anim.selectorzoomout);
         outAnimation.setAnimationListener(new AnimationListener() {
             public void onAnimationEnd(Animation animation) {
               controls.setVisibility(View.GONE);
@@ -120,16 +120,16 @@ public class MainActivity extends Activity {
 			public void gridTouched(GridCell cell) {
 				if (controls.getVisibility() == View.VISIBLE) {
 					// digitSelector.setVisibility(View.GONE);
-			    	if (MainActivity.this.preferences.getBoolean("hideselector", false)) {
+			    	if (MathDoku.this.preferences.getBoolean("hideselector", false)) {
 						controls.startAnimation(outAnimation);
 						//cell.mSelected = false;
 						kenKenGrid.mSelectorShown = false;
 			    	}
 					kenKenGrid.requestFocus();
 				} else {
-			    	if (MainActivity.this.preferences.getBoolean("hideselector", false)) {
+			    	if (MathDoku.this.preferences.getBoolean("hideselector", false)) {
 						controls.setVisibility(View.VISIBLE);
-						Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.selectorzoomin);
+						Animation animation = AnimationUtils.loadAnimation(MathDoku.this, R.anim.selectorzoomin);
 						controls.startAnimation(animation);
 						kenKenGrid.mSelectorShown = true;
 			    	}
@@ -146,11 +146,11 @@ public class MainActivity extends Activity {
     			public void puzzleSolved() {
     				// TODO Auto-generated method stub
     				if (kenKenGrid.mActive) {
-                        Toast.makeText(MainActivity.this, R.string.main_ui_solved_messsage, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MathDoku.this, R.string.main_ui_solved_messsage, Toast.LENGTH_SHORT).show();
 //    					animText(R.string.main_ui_solved_messsage, 0xFF002F00);
                     }
-    				MainActivity.this.controls.setVisibility(View.GONE);
-    				MainActivity.this.pressMenu.setVisibility(View.VISIBLE);
+    				MathDoku.this.controls.setVisibility(View.GONE);
+    				MathDoku.this.pressMenu.setVisibility(View.VISIBLE);
     			}
         });
         
@@ -160,19 +160,19 @@ public class MainActivity extends Activity {
         			// Convert text of button (number) to Integer
                     if (event.getActionMasked() == MotionEvent.ACTION_UP) {
                         int d = Integer.parseInt(((Button)v).getText().toString());
-                        MainActivity.this.digitSelected(d);
+                        MathDoku.this.digitSelected(d);
                     }
                     return true;
         		}
         	});
         this.clearDigit.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				MainActivity.this.digitSelected(0);
+				MathDoku.this.digitSelected(0);
 			}
         });
         this.allDigit.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				MainActivity.this.digitSelected(-1);
+				MathDoku.this.digitSelected(-1);
 			}
         });
         
@@ -212,7 +212,7 @@ public class MainActivity extends Activity {
 	    }
 	    this.kenKenGrid.mDupedigits = this.preferences.getBoolean("dupedigits", true);
 	    this.kenKenGrid.mBadMaths = this.preferences.getBoolean("badmaths", true);
-	    if (this.kenKenGrid.mActive && !MainActivity.this.preferences.getBoolean("hideselector", false)) {
+	    if (this.kenKenGrid.mActive && !MathDoku.this.preferences.getBoolean("hideselector", false)) {
 	    	this.controls.setVisibility(View.VISIBLE);
 	    }
 	    this.setSoundEffectsEnabled(this.preferences.getBoolean("soundeffects", true));
@@ -392,7 +392,7 @@ public class MainActivity extends Activity {
    			return true;
    		case R.id.options:
             startActivityForResult(new Intent(
-	                MainActivity.this, OptionsActivity.class), 0);  
+	                MathDoku.this, OptionsActivity.class), 0);  
             return true;
    		case R.id.help:
     		this.openHelpDialog();
@@ -455,18 +455,18 @@ public class MainActivity extends Activity {
     // Create runnable for posting
     final Runnable newGameReady = new Runnable() {
         public void run() {
-        	MainActivity.this.dismissDialog(0);
-    	    if (MainActivity.this.preferences.getBoolean("alternatetheme", true)) {
-    	    	MainActivity.this.topLayout.setBackgroundDrawable(null);
-//    	    	MainActivity.this.topLayout.setBackgroundColor(0xFFA0A0CC);
-//    	    	MainActivity.this.topLayout.setBackgroundResource(R.drawable.background);
-                MainActivity.this.kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
+        	MathDoku.this.dismissDialog(0);
+    	    if (MathDoku.this.preferences.getBoolean("alternatetheme", true)) {
+    	    	MathDoku.this.topLayout.setBackgroundDrawable(null);
+//    	    	MathDoku.this.topLayout.setBackgroundColor(0xFFA0A0CC);
+//    	    	MathDoku.this.topLayout.setBackgroundResource(R.drawable.background);
+                MathDoku.this.kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
     	    } else {
-    	    	MainActivity.this.topLayout.setBackgroundResource(R.drawable.background);
-    	    	MainActivity.this.kenKenGrid.setTheme(GridView.THEME_CARVED);
+    	    	MathDoku.this.topLayout.setBackgroundResource(R.drawable.background);
+    	    	MathDoku.this.kenKenGrid.setTheme(GridView.THEME_CARVED);
     	    }
-        	MainActivity.this.setButtonVisibility(kenKenGrid.mGridSize);
-        	MainActivity.this.kenKenGrid.invalidate();
+        	MathDoku.this.setButtonVisibility(kenKenGrid.mGridSize);
+        	MathDoku.this.kenKenGrid.invalidate();
         }
     };
     
@@ -476,8 +476,8 @@ public class MainActivity extends Activity {
 
     	Thread t = new Thread() {
 			public void run() {
-				MainActivity.this.kenKenGrid.reCreate(hideOperators);
-				MainActivity.this.mHandler.post(newGameReady);
+				MathDoku.this.kenKenGrid.reCreate(hideOperators);
+				MathDoku.this.mHandler.post(newGameReady);
 			}
     	};
     	t.start();
@@ -504,7 +504,7 @@ public class MainActivity extends Activity {
     		
 		this.solvedText.setVisibility(View.GONE);
 		this.pressMenu.setVisibility(View.GONE);
-    	if (!MainActivity.this.preferences.getBoolean("hideselector", false)) {
+    	if (!MathDoku.this.preferences.getBoolean("hideselector", false)) {
 			this.controls.setVisibility(View.VISIBLE);
     	}
     }
@@ -527,13 +527,13 @@ public class MainActivity extends Activity {
         View view = li.inflate(R.layout.aboutview, null); 
         TextView tv = (TextView)view.findViewById(R.id.aboutVersionCode);
         tv.setText(getVersionName() + " (revision " + getVersionNumber() + ")");
-        new AlertDialog.Builder(MainActivity.this)
+        new AlertDialog.Builder(MathDoku.this)
         .setTitle(getResources().getString(R.string.application_name) + " " + getResources().getString(R.string.menu_help))
         .setIcon(R.drawable.about)
         .setView(view)
         .setNeutralButton(R.string.menu_changes, new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog, int whichButton) {
-              MainActivity.this.openChangesDialog();
+              MathDoku.this.openChangesDialog();
           }
         })
         .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
@@ -546,7 +546,7 @@ public class MainActivity extends Activity {
     private void openChangesDialog() {
       LayoutInflater li = LayoutInflater.from(this);
       View view = li.inflate(R.layout.changeview, null); 
-      new AlertDialog.Builder(MainActivity.this)
+      new AlertDialog.Builder(MathDoku.this)
       .setTitle(R.string.changelog_title)
       .setIcon(R.drawable.about)
       .setView(view)
@@ -559,7 +559,7 @@ public class MainActivity extends Activity {
     }
     
     private void openClearDialog() {
-        new AlertDialog.Builder(MainActivity.this)
+        new AlertDialog.Builder(MathDoku.this)
         .setTitle(R.string.context_menu_clear_grid_confirmation_title)
         .setMessage(R.string.context_menu_clear_grid_confirmation_message)
         .setIcon(android.R.drawable.ic_dialog_alert)
@@ -571,7 +571,7 @@ public class MainActivity extends Activity {
         .setPositiveButton(R.string.context_menu_clear_grid_positive_button_label, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				MainActivity.this.kenKenGrid.clearUserValues();
+				MathDoku.this.kenKenGrid.clearUserValues();
 			}
         })
         .show();  

@@ -6,7 +6,7 @@
     <uses-sdk android:minSdkVersion="11"
               android:targetSdkVersion="14"/>
     <application android:icon="@drawable/icon" android:label="@string/application_name">
-        <activity android:name=".MainActivity"
+        <activity android:name=".MathDoku"
                   android:theme="@android:style/Theme.Holo.Light"
                   android:label="@string/application_name">
             <intent-filter>
