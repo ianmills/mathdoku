@@ -418,6 +418,7 @@ public class MathDoku extends Activity {
             kenKenGrid.mSelectedCell.mPossibles.clear();
             kenKenGrid.mSelectedCell.setUserValue(0);
         } else if (value == -1) { //all button
+			kenKenGrid.mSelectedCell.clearUserValue();
             for (int i=1;i<=kenKenGrid.mGridSize; i++) {
                 kenKenGrid.mSelectedCell.mPossibles.add(i);
             }
