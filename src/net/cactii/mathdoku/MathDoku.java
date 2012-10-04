@@ -45,6 +45,7 @@ import android.widget.Toast;
 import android.R.style;
 
 public class MathDoku extends Activity {
+    private final String TAG = "MathDoku";
     private GridView kenKenGrid;
     private TextView solvedText;
     private TextView pressMenu;
@@ -418,7 +419,8 @@ public class MathDoku extends Activity {
             kenKenGrid.mSelectedCell.mPossibles.clear();
             kenKenGrid.mSelectedCell.setUserValue(0);
         } else if (value == -1) { //all button
-			kenKenGrid.mSelectedCell.clearUserValue();
+            kenKenGrid.mSelectedCell.clearUserValue();
+            kenKenGrid.mSelectedCell.mPossibles.clear();
             for (int i=1;i<=kenKenGrid.mGridSize; i++) {
                 kenKenGrid.mSelectedCell.mPossibles.add(i);
             }
