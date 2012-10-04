@@ -129,7 +129,7 @@ public class MathDoku extends Activity {
                 } else {
                     if (preferences.getBoolean("hideselector", false)) {
                         controls.setVisibility(View.VISIBLE);
-                        Animation animation = AnimationUtils.loadAnimation(this, R.anim.selectorzoomin);
+                        Animation animation = AnimationUtils.loadAnimation(kenKenGrid.mContext, R.anim.selectorzoomin);
                         controls.startAnimation(animation);
                         kenKenGrid.mSelectorShown = true;
                     }
