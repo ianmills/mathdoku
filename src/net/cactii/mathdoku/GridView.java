@@ -558,6 +558,15 @@ public boolean mBadMaths;
 	  }
 	  return count;
   }
+  public int getNumValueInRow(GridCell ocell, int value) {
+	  int count = 0;
+	  for (GridCell cell : this.mCells) {
+		  if (cell.mRow == ocell.mRow && cell.getUserValue() == value)
+			  count++;
+	  }
+	  return count;
+  }
+
   // Return the number of times a given user value is in a column
   public int getNumValueInCol(GridCell ocell) {
 	  int count = 0;
@@ -567,7 +576,15 @@ public boolean mBadMaths;
 	  }
 	  return count;
   }
-  
+
+  public int getNumValueInCol(GridCell ocell, int value) {
+	  int count = 0;
+	  for (GridCell cell : this.mCells) {
+		  if (cell.mColumn == ocell.mColumn && cell.getUserValue() == value)
+			  count++;
+	  }
+	  return count;
+  }
   // Solve the puzzle by setting the Uservalue to the actual value
   public void Solve() {
 	  for (GridCell cell : this.mCells)

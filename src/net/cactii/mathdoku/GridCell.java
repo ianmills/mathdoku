@@ -341,6 +341,10 @@ public class GridCell {
         	float yScale = (float) 0.21 * cellSize;
         	for (int i = 0 ; i < mPossibles.size() ; i++) {
         		int possible = mPossibles.get(i);
+                mPossiblesPaint.setColor(0xFF000000);
+                if (mContext.getNumValueInRow(this, possible) >= 1 || mContext.getNumValueInCol(this, possible) >= 1) {
+                    mPossiblesPaint.setColor(0x50FF0000);
+                }
         		float xPos = mPosX + xOffset + ((possible-1)%3)*xScale;
         		float yPos = mPosY + yOffset + ((int)(possible-1)/3)*yScale;
            		canvas.drawText(Integer.toString(possible), xPos, yPos, this.mPossiblesPaint);
@@ -348,7 +352,7 @@ public class GridCell {
     	}
     	else {
     		this.mPossiblesPaint.setFakeBoldText(false);
-    		mPossiblesPaint.setTextSize((int)(cellSize/4));
+    		mPossiblesPaint.setTextSize((int)((cellSize*1.5)/mPossibles.size()));
     		String possibles = "";
     		for (int i = 0 ; i < mPossibles.size() ; i++)
     			possibles += Integer.toString(mPossibles.get(i));
