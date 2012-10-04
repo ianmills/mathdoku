@@ -45,7 +45,7 @@ import android.widget.Toast;
 import android.R.style;
 
 public class MathDoku extends Activity {
-    public GridView kenKenGrid;
+    private GridView kenKenGrid;
     private TextView solvedText;
     private TextView pressMenu;
     private ProgressDialog mProgressDialog;
@@ -60,9 +60,9 @@ public class MathDoku extends Activity {
     private Animation outAnimation;
     private Animation solvedAnimation;
 
-    public SharedPreferences preferences;
+    private SharedPreferences preferences;
 
-    final Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
     private WakeLock wakeLock;
 
     /** Called when the activity is first created. */
