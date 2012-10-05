@@ -31,7 +31,7 @@ public class GridCell {
   // String of the cage
   public String mCageText;
   // View context
-  public GridView mContext;
+  public GridView mGridView;
   // User's candidate digits
   public ArrayList<Integer> mPossibles;
   // Whether to show warning background (duplicate value in row/col)
@@ -63,71 +63,71 @@ public class GridCell {
   
   public int mTheme;
   
-  public GridCell(GridView context, int cell) {
-    int gridSize = context.mGridSize;
-    this.mContext = context;
-    this.mCellNumber = cell;
-    this.mColumn = cell % gridSize;
-    this.mRow = (int)(cell / gridSize);
-    this.mCageText = "";
-    this.mCageId = -1;
-    this.mValue = 0;
-    this.mUserValue = 0;
-    this.mShowWarning = false;
-    this.mCheated = false;
-    this.mInvalidHighlight = false;
+  public GridCell(GridView gridView, int cell) {
+    mGridView = gridView;
+    int gridSize = mGridView.mGridSize;
+    mCellNumber = cell;
+    mColumn = cell % gridSize;
+    mRow = (int)(cell / gridSize);
+    mCageText = "";
+    mCageId = -1;
+    mValue = 0;
+    mUserValue = 0;
+    mShowWarning = false;
+    mCheated = false;
+    mInvalidHighlight = false;
 
-    this.mPosX = 0;
-    this.mPosY = 0;
+    mPosX = 0;
+    mPosY = 0;
     
-    this.mValuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    this.mValuePaint.setColor(0xFF000000);
-    // this.mValuePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
+    mValuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    mValuePaint.setColor(0xFF000000);
+    // mValuePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
 
-    this.mBorderPaint = new Paint();
-    this.mBorderPaint.setColor(0xFF000000);
-    this.mBorderPaint.setStrokeWidth(2);
+    mBorderPaint = new Paint();
+    mBorderPaint.setColor(0xFF000000);
+    mBorderPaint.setStrokeWidth(2);
 
     
-    this.mWrongBorderPaint = new Paint();
-    this.mWrongBorderPaint.setColor(0xFFBB0000);
-    this.mWrongBorderPaint.setStrokeWidth(2);
+    mWrongBorderPaint = new Paint();
+    mWrongBorderPaint.setColor(0xFFBB0000);
+    mWrongBorderPaint.setStrokeWidth(2);
     
-    this.mCageSelectedPaint = new Paint();
-    this.mCageSelectedPaint.setColor(0xFF9BCF00);
-    this.mCageSelectedPaint.setStrokeWidth(2);
+    mCageSelectedPaint = new Paint();
+    mCageSelectedPaint.setColor(0xFF9BCF00);
+    mCageSelectedPaint.setStrokeWidth(2);
     
-    this.mWarningPaint = new Paint();
-    this.mWarningPaint.setColor(0x50FF0000);
-    this.mWarningPaint.setStyle(Paint.Style.FILL);
+    mWarningPaint = new Paint();
+    mWarningPaint.setColor(0x50FF0000);
+    mWarningPaint.setStyle(Paint.Style.FILL);
     
-    this.mCheatedPaint = new Paint();
-    this.mCheatedPaint.setColor(0x90ffcea0);
-    this.mCheatedPaint.setStyle(Paint.Style.FILL);
+    mCheatedPaint = new Paint();
+    mCheatedPaint.setColor(0x90ffcea0);
+    mCheatedPaint.setStyle(Paint.Style.FILL);
     
-    this.mSelectedPaint = new Paint();
-    this.mSelectedPaint.setColor(0xD0F0D042);
-    this.mSelectedPaint.setStyle(Paint.Style.FILL);
+    mSelectedPaint = new Paint();
+    mSelectedPaint.setColor(0xD0F0D042);
+    mSelectedPaint.setStyle(Paint.Style.FILL);
     
-    this.mCageTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    this.mCageTextPaint.setColor(0xFF0000A0);
-    this.mCageTextPaint.setTextSize(14);
-    //this.mCageTextPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
+    mCageTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    mCageTextPaint.setColor(0xFF0000A0);
+    mCageTextPaint.setTextSize(14);
+    //mCageTextPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
    
-    this.mPossiblesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    this.mPossiblesPaint.setColor(0xFF000000);
-    this.mPossiblesPaint.setTextSize(10);
-    this.mPossiblesPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
+    mPossiblesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    mPossiblesPaint.setColor(0xFF000000);
+    mPossiblesPaint.setTextSize(10);
+    mPossiblesPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
     
-    this.mPossibles = new ArrayList<Integer>();
-    //this.mPossibles.add(1);
-    //this.mPossibles.add(2);
-    //this.mPossibles.add(3);
-    //this.mPossibles.add(4);
+    mPossibles = new ArrayList<Integer>();
+    //mPossibles.add(1);
+    //mPossibles.add(2);
+    //mPossibles.add(3);
+    //mPossibles.add(4);
 
-    //this.mPossibles.add(5);
+    //mPossibles.add(5);
     
-    this.setBorders(BORDER_NONE, BORDER_NONE, BORDER_NONE, BORDER_NONE);
+    setBorders(BORDER_NONE, BORDER_NONE, BORDER_NONE, BORDER_NONE);
   }
   
   public void setTheme(int theme) {
@@ -137,8 +137,8 @@ public class GridCell {
 		this.mBorderPaint.setPathEffect(new DiscretePathEffect(20, 1));
 	    this.mWrongBorderPaint.setAntiAlias(true);
 	    this.mWrongBorderPaint.setPathEffect(new DiscretePathEffect(20, 1));
-	    this.mValuePaint.setTypeface(this.mContext.mFace);
-	    this.mCageTextPaint.setTypeface(this.mContext.mFace);
+	    this.mValuePaint.setTypeface(this.mGridView.mFace);
+	    this.mCageTextPaint.setTypeface(this.mGridView.mFace);
 	  } else if (theme == GridView.THEME_NEWSPAPER) {
 	    this.mBorderPaint.setAntiAlias(false);
 		this.mBorderPaint.setPathEffect(null);
@@ -231,7 +231,7 @@ public class GridCell {
   public void onDraw(Canvas canvas, boolean onlyBorders) {
     
     // Calculate x and y for the cell origin (topleft)
-    float cellSize = (float)this.mContext.getMeasuredWidth() / (float)this.mContext.mGridSize;
+    float cellSize = (float)this.mGridView.getMeasuredWidth() / (float)this.mGridView.mGridSize;
     this.mPosX = cellSize * this.mColumn;
     this.mPosY = cellSize * this.mRow;
     
@@ -239,13 +239,13 @@ public class GridCell {
     float south = this.mPosY + cellSize;
     float east = this.mPosX + cellSize;
     float west = this.mPosX;
-    GridCell cellAbove = this.mContext.getCellAt(this.mRow-1, this.mColumn);
-    GridCell cellLeft = this.mContext.getCellAt(this.mRow, this.mColumn-1);
-    GridCell cellRight = this.mContext.getCellAt(this.mRow, this.mColumn+1);
-    GridCell cellBelow = this.mContext.getCellAt(this.mRow+1, this.mColumn);
+    GridCell cellAbove = this.mGridView.getCellAt(this.mRow-1, this.mColumn);
+    GridCell cellLeft = this.mGridView.getCellAt(this.mRow, this.mColumn-1);
+    GridCell cellRight = this.mGridView.getCellAt(this.mRow, this.mColumn+1);
+    GridCell cellBelow = this.mGridView.getCellAt(this.mRow+1, this.mColumn);
 
     if (!onlyBorders) {
-	    if ((this.mShowWarning && this.mContext.mDupedigits) || this.mInvalidHighlight)
+	    if ((this.mShowWarning && this.mGridView.mDupedigits) || this.mInvalidHighlight)
 	    	canvas.drawRect(west + 1, north+1, east-1, south-1, this.mWarningPaint);
 	    if (this.mSelected)
 	    	canvas.drawRect(west+1, north+1, east-1, south-1, this.mSelectedPaint);
@@ -330,7 +330,7 @@ public class GridCell {
     }
     
     if (mPossibles.size()>1) {
-    	Activity activity = mContext.mContext;
+    	Activity activity = mGridView.mContext;
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
     	if (prefs.getBoolean("maybe3x3", true)) {
         	this.mPossiblesPaint.setFakeBoldText(true);
@@ -342,7 +342,8 @@ public class GridCell {
         	for (int i = 0 ; i < mPossibles.size() ; i++) {
         		int possible = mPossibles.get(i);
                 mPossiblesPaint.setColor(0xFF000000);
-                if (mContext.getNumValueInRow(this, possible) >= 1 || mContext.getNumValueInCol(this, possible) >= 1) {
+                if (mGridView.getNumValueInRow(this, possible) >= 1 || 
+						mGridView.getNumValueInCol(this, possible) >= 1) {
                     mPossiblesPaint.setColor(0x50FF0000);
                 }
         		float xPos = mPosX + xOffset + ((possible-1)%3)*xScale;
@@ -354,9 +355,16 @@ public class GridCell {
     		this.mPossiblesPaint.setFakeBoldText(false);
     		mPossiblesPaint.setTextSize((int)((cellSize*1.5)/mPossibles.size()));
     		String possibles = "";
-    		for (int i = 0 ; i < mPossibles.size() ; i++)
-    			possibles += Integer.toString(mPossibles.get(i));
-    		canvas.drawText(possibles, mPosX+3, mPosY + cellSize-5, mPossiblesPaint);
+    		for (int i = 0 ; i < mPossibles.size() ; i++) {
+        		int possible = mPossibles.get(i);
+    			possibles += Integer.toString(possible);
+                mPossiblesPaint.setColor(0xFF000000);
+                if (mGridView.getNumValueInRow(this, possible) >= 1 || 
+						mGridView.getNumValueInCol(this, possible) >= 1) {
+                    mPossiblesPaint.setColor(0x50FF0000);
+                }
+				canvas.drawText(possibles, mPosX+3, mPosY + cellSize-5, mPossiblesPaint);
+			}
     	}
     }
   }
