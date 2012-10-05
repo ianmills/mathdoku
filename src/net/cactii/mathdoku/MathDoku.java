@@ -1,6 +1,7 @@
 package net.cactii.mathdoku;
 
 import android.app.Activity;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -75,7 +76,8 @@ public class MathDoku extends Activity {
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "athdoku");
-
+		ActionBar ab = getActionBar();
+		ab.setDisplayShowTitleEnabled(false);
         topLayout = (LinearLayout)findViewById(R.id.topLayout);
         kenKenGrid = (GridView)findViewById(R.id.gridView);
         kenKenGrid.mContext = this;
@@ -116,7 +118,7 @@ public class MathDoku extends Activity {
             public void onAnimationStart(Animation animation) {}
           });
 
-        this.kenKenGrid.setOnGridTouchListener(this.kenKenGrid.new OnGridTouchListener() {
+        kenKenGrid.setOnGridTouchListener(this.kenKenGrid.new OnGridTouchListener() {
             @Override
             public void gridTouched(GridCell cell) {
                 if (controls.getVisibility() == View.VISIBLE) {
