@@ -10,6 +10,7 @@ import android.graphics.DiscretePathEffect;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class GridCell {
   // Index of the cell (left to right, top to bottom, zero-indexed)
@@ -354,16 +355,17 @@ public class GridCell {
     	else {
     		this.mPossiblesPaint.setFakeBoldText(false);
     		mPossiblesPaint.setTextSize((int)((cellSize*1.5)/mPossibles.size()));
-    		String possibles = "";
+            int offset = 0;
     		for (int i = 0 ; i < mPossibles.size() ; i++) {
         		int possible = mPossibles.get(i);
-    			possibles += Integer.toString(possible);
-                mPossiblesPaint.setColor(0xFF000000);
                 if (mGridView.getNumValueInRow(this, possible) >= 1 || 
 						mGridView.getNumValueInCol(this, possible) >= 1) {
                     mPossiblesPaint.setColor(0x50FF0000);
+                } else {
+                    mPossiblesPaint.setColor(0xFF000000);
                 }
-				canvas.drawText(possibles, mPosX+3, mPosY + cellSize-5, mPossiblesPaint);
+				canvas.drawText(Integer.toString(possible), mPosX+3+offset, mPosY + cellSize-5, mPossiblesPaint);
+                offset += mPossiblesPaint.measureText(Integer.toString(possible));
 			}
     	}
     }
