@@ -1,11 +1,11 @@
-package net.cactii.mathdoku;
+package com.mathdoku;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.srlee.DLX.DLX.SolveType;
-import com.srlee.DLX.MathDokuDLX;
-import net.cactii.mathdoku.GridCell;
+import com.mathdoku.DLX.SolveType;
+import com.mathdoku.MathDokuDLX;
+import com.mathdoku.GridCell;
 
 import android.app.Activity;
 import android.content.Context;

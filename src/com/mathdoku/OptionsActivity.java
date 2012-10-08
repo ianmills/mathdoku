@@ -1,4 +1,4 @@
-package net.cactii.mathdoku;
+package com.mathdoku;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;

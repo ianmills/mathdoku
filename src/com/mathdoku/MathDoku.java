@@ -1,4 +1,4 @@
-package net.cactii.mathdoku;
+package com.mathdoku;
 
 import android.app.Activity;
 import android.app.ActionBar;

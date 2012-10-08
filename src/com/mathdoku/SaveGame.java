@@ -1,4 +1,4 @@
-package net.cactii.mathdoku;
+package com.mathdoku;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -1,4 +1,4 @@
-package com.srlee.DLX;
+package com.mathdoku;
 
 import java.util.ArrayList;
 
@@ -230,5 +230,69 @@ public class DLX extends Object
             UncoverCol(chosenCol);
         }
     return;
+    }
+
+    public class LL2DNode extends Object
+    {
+        public void SetLeft(LL2DNode left) { L = left; }
+        public void SetRight(LL2DNode right) { R = right; }
+        public void SetUp(LL2DNode up) { U = up; }
+        public void SetDown(LL2DNode down) { D = down; }
+        public LL2DNode GetLeft() { return L; }
+        public LL2DNode GetRight() { return R; }
+        public LL2DNode GetUp() { return U; }
+        public LL2DNode GetDown() { return D; }
+        public LL2DNode()
+        {
+            L = R = U = D = null;
+        }
+
+        private LL2DNode L;   // Pointer to left node
+        private LL2DNode R;   // Pointer to right node
+        private LL2DNode U;   // Pointer to node above
+        private LL2DNode D;   // Pointer to node below
+    }
+
+    public class DLXNode extends LL2DNode
+    {
+        public DLXNode(DLXColumn col, int ri)
+        {
+            RowIdx = ri;
+            C = col;
+            col.GetUp().SetDown(this);
+            SetUp(col.GetUp());
+            SetDown(col);
+            col.SetUp(this);
+            col.IncSize();
+        }
+        public DLXColumn GetColumn() { return C; }
+        public int GetRowIdx() { return RowIdx; }
+
+        private DLXColumn C;	// Pointer to Column Header
+        private int RowIdx;     // Index to row
+    }
+
+    public class DLXRow
+    {
+        public DLXRow(DLXNode first)
+        {
+            FirstNode = first;
+        }
+
+        public DLXNode FirstNode;
+    }
+
+    public class DLXColumn extends LL2DNode
+    {
+        private int size;		// Number of items in column
+        public DLXColumn()
+        {
+            size = 0;
+            SetUp(this);
+            SetDown(this);
+        }
+        public int GetSize() { return size; }
+        public void DecSize() { size--; }
+        public void IncSize() { size++; }
     }
 }

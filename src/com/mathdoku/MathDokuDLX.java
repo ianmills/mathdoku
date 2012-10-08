@@ -1,8 +1,9 @@
-package com.srlee.DLX;
+package com.mathdoku;
 
 import java.util.ArrayList;
 
-import net.cactii.mathdoku.GridCage;
+import com.mathdoku.DLX;
+import com.mathdoku.GridCage;
 
 public class MathDokuDLX extends DLX {
 

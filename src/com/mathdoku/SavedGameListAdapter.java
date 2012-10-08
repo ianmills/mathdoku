@@ -1,4 +1,4 @@
-package net.cactii.mathdoku;
+package com.mathdoku;
 
 import java.io.File;
 import java.text.DateFormat;

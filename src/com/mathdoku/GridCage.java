@@ -1,4 +1,4 @@
-package net.cactii.mathdoku;
+package com.mathdoku;
 
 import java.util.ArrayList;
 import java.util.Arrays;
