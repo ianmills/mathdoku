@@ -25,7 +25,7 @@ public class SaveGame {
 	}
 	
 	public boolean Save(GridView view) {
-		synchronized (view.mLock) {	// Avoid saving game at the same time as creating puzzle
+		synchronized (view) {	// Avoid saving game at the same time as creating puzzle
 			BufferedWriter writer = null;
 			try {
 				writer = new BufferedWriter(new FileWriter(this.filename));
