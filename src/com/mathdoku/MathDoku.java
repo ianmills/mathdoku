@@ -247,9 +247,6 @@ public class MathDoku extends Activity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        //Disable or enable solution option depending on whether grid is active
-        menu.findItem(R.id.checkprogress).setEnabled(kenKenGrid.mActive);
-
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -375,6 +372,9 @@ public class MathDoku extends Activity {
             return true;
             case R.id.checkprogress:
             int textId;
+            if (kenKenGrid.mActive == false) {
+                return false;
+            }
             if (kenKenGrid.isSolutionValidSoFar())
                 textId = R.string.ProgressOK;
             else {
