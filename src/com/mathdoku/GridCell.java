@@ -333,6 +333,11 @@ public class GridCell {
     if (mPossibles.size()>1) {
     	Activity activity = mGridView.mContext;
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+        String invalidMaybePref = prefs.getString("invalidmaybes", "I");
+        boolean markInvalidMaybes = false;
+        if (invalidMaybePref != null && invalidMaybePref.equals("M")) {
+            markInvalidMaybes = true;
+        }
     	if (prefs.getBoolean("maybe3x3", true)) {
         	this.mPossiblesPaint.setFakeBoldText(true);
         	this.mPossiblesPaint.setTextSize((int)(cellSize/4.5));
@@ -343,8 +348,8 @@ public class GridCell {
         	for (int i = 0 ; i < mPossibles.size() ; i++) {
         		int possible = mPossibles.get(i);
                 mPossiblesPaint.setColor(0xFF000000);
-                if (mGridView.getNumValueInRow(this, possible) >= 1 || 
-						mGridView.getNumValueInCol(this, possible) >= 1) {
+                if (markInvalidMaybes && (mGridView.getNumValueInRow(this, possible) >= 1 ||
+						mGridView.getNumValueInCol(this, possible) >= 1)) {
                     mPossiblesPaint.setColor(0x50FF0000);
                 }
         		float xPos = mPosX + xOffset + ((possible-1)%3)*xScale;
@@ -358,8 +363,8 @@ public class GridCell {
             int offset = 0;
     		for (int i = 0 ; i < mPossibles.size() ; i++) {
         		int possible = mPossibles.get(i);
-                if (mGridView.getNumValueInRow(this, possible) >= 1 || 
-						mGridView.getNumValueInCol(this, possible) >= 1) {
+                if (markInvalidMaybes && (mGridView.getNumValueInRow(this, possible) >= 1 ||
+						mGridView.getNumValueInCol(this, possible) >= 1)) {
                     mPossiblesPaint.setColor(0x50FF0000);
                 } else {
                     mPossiblesPaint.setColor(0xFF000000);

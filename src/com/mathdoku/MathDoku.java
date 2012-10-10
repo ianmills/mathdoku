@@ -47,6 +47,11 @@ import android.R.style;
 
 public class MathDoku extends Activity {
     private final String TAG = "MathDoku";
+    private final int SHOW_SOLUTION = 105;
+    private final int CLEAR_CAGE = 103;
+    private final int CLEAR_GRID = 104;
+    private final int REVEAL_CELL = 102;
+    private final int USE_MAYBES = 101;
     private GridView kenKenGrid;
     private TextView solvedText;
     private TextView pressMenu;
@@ -233,6 +238,9 @@ public class MathDoku extends Activity {
 
     protected void onActivityResult(int requestCode, int resultCode,
               Intent data) {
+        if (requestCode == 0 && kenKenGrid.mActive) {
+            kenKenGrid.invalidate();
+        }
         if (requestCode != 7 || resultCode != Activity.RESULT_OK)
           return;
         Bundle extras = data.getExtras();
@@ -261,30 +269,36 @@ public class MathDoku extends Activity {
     public void onCreateContextMenu(ContextMenu menu, View v,
             ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+        boolean showClearCageMaybes = false;
+        boolean showUseMaybes = false;
         if (!kenKenGrid.mActive)
             return;
+        for (GridCell cell : kenKenGrid.mCages.get(kenKenGrid.mSelectedCell.mCageId).mCells) {
+            if (cell.isUserValueSet() || cell.mPossibles.size() > 0) {
+                showClearCageMaybes = true;
+            } else if (cell.mPossibles.size() == 1) {
+                showUseMaybes = true;
+            }
+        }
 
-        menu.add(3, 105, 0, R.string.context_menu_show_solution);
-        menu.add(2, 101, 0, R.string.context_menu_use_cage_maybes);
-        menu.setGroupEnabled(2, false);
-        menu.add(0, 102, 0,  R.string.context_menu_reveal_cell);
-        menu.add(1, 103, 0,  R.string.context_menu_clear_cage_cells);
-        menu.setGroupEnabled(1, false);
-        menu.add(0, 104, 0,  R.string.context_menu_clear_grid);
+        menu.add(3, SHOW_SOLUTION, 0, R.string.context_menu_show_solution);
+        menu.add(0, REVEAL_CELL, 0,  R.string.context_menu_reveal_cell);
+        if (showClearCageMaybes)
+            menu.add(1, CLEAR_CAGE, 0,  R.string.context_menu_clear_cage_cells);
+        if (showUseMaybes) {
+            menu.add(2, USE_MAYBES, 0, R.string.context_menu_use_cage_maybes);
+        }
+
+        menu.add(0, CLEAR_GRID, 0,  R.string.context_menu_clear_grid);
         menu.setHeaderTitle(R.string.application_name);
 
-        for (GridCell cell : kenKenGrid.mCages.get(kenKenGrid.mSelectedCell.mCageId).mCells) {
-            if (cell.isUserValueSet() || cell.mPossibles.size() > 0)
-                menu.setGroupEnabled(1, true);
-            if (cell.mPossibles.size() == 1)
-                menu.setGroupEnabled(2, true);
-        }
     }
 
+    @Override
     public boolean onContextItemSelected(MenuItem item) {
         GridCell  selectedCell = kenKenGrid.mSelectedCell;
         switch (item.getItemId()) {
-            case 103: // Clear cage
+            case CLEAR_CAGE:
                 if (selectedCell == null)
                     break;
                 for (GridCell cell : kenKenGrid.mCages.get(selectedCell.mCageId).mCells) {
@@ -292,7 +306,7 @@ public class MathDoku extends Activity {
                 }
                 kenKenGrid.invalidate();
                 break;
-            case 101: // Use maybes
+            case USE_MAYBES:
                 if (selectedCell == null)
                     break;
                 for (GridCell cell : kenKenGrid.mCages.get(selectedCell.mCageId).mCells) {
@@ -302,7 +316,7 @@ public class MathDoku extends Activity {
                 }
                 kenKenGrid.invalidate();
                 break;
-            case 102: // Reveal cell
+            case REVEAL_CELL:
                 if (selectedCell == null)
                     break;
                 selectedCell.setUserValue(selectedCell.mValue);
@@ -310,10 +324,10 @@ public class MathDoku extends Activity {
                 Toast.makeText(this, R.string.main_ui_cheat_messsage, Toast.LENGTH_SHORT).show();
                 kenKenGrid.invalidate();
                 break;
-            case 104: // Clear grid
+            case CLEAR_GRID:
                 openClearDialog();
                 break;
-            case 105: // Show solution
+            case SHOW_SOLUTION:
                 kenKenGrid.Solve();
                 pressMenu.setVisibility(View.VISIBLE);
                 break;
@@ -427,12 +441,18 @@ public class MathDoku extends Activity {
                 kenKenGrid.mSelectedCell.mPossibles.add(i);
             }
         } else {
-            if (kenKenGrid.mSelectedCell.isUserValueSet())
+            if (kenKenGrid.mSelectedCell.isUserValueSet()) {
                 kenKenGrid.mSelectedCell.clearUserValue();
+            }
             kenKenGrid.mSelectedCell.togglePossible(value);
             if (kenKenGrid.mSelectedCell.mPossibles.size() == 1) {
                 kenKenGrid.mSelectedCell.setUserValue(kenKenGrid.mSelectedCell.mPossibles.get(0));
             }
+            String invalidMaybePref = preferences.getString("invalidmaybes", "I");
+            if (invalidMaybePref != null && invalidMaybePref.equals("C")) {
+                while (kenKenGrid.clearInvalidPossibles() == true);
+            }
+
         }
         for (int i=1;i<=9;i++) {
             if (kenKenGrid.mSelectedCell.mPossibles.contains(i)) {

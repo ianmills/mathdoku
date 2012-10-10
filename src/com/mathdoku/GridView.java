@@ -120,6 +120,27 @@ public class GridView extends View implements OnTouchListener  {
                 cell.setTheme(theme);
     }
 
+    public boolean clearInvalidPossibles() {
+        boolean isChanged = false;
+        for (GridCell cell : mCells) {
+            for (int i = 1; i <= mGridSize;i++ ) {
+                if (cell.mPossibles.contains(i) == false) {
+                    continue;
+                }
+                int possible = i;
+                if (getNumValueInRow(cell, possible) >= 1 ||
+					getNumValueInCol(cell, possible) >= 1) {
+                    cell.togglePossible(possible);
+                    if (cell.mPossibles.size() == 1) {
+                        cell.setUserValue(cell.mPossibles.get(0));
+                    }
+                    isChanged = true;
+                }
+            }
+        }
+        return isChanged;
+    }
+
     public synchronized void reCreate(boolean hideOperators) {
         int num_solns;
         int num_attempts = 0;

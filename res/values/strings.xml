@@ -56,13 +56,16 @@
 	<!-- The title and summary of the "hide operator" option. This option controls whether the mathematical operation signs (+x/-) are shown. -->
 	<string name="option_hide_operators_title">Hide operators</string>
 	<string name="option_hide_operators_summary">Hide operation signs like +, -, x, /\n(affects new game, not current)</string>
+    <!-- What to do with maybes -->
+    <string name="option_invalid_maybes_title">Maybe assistance</string>
+	<string name="option_invalid_maybes_summary">Automatically mark or clear invalid maybes</string>
 	<!-- The title and summary of the "hide selector" option. This option auto-shows the digit buttons when the player selects a cell, and auto-hides those buttons when the player deselects a cell. -->
 	<string name="option_hide_selector_title">Auto-hide digit buttons</string>
 	<string name="option_hide_selector_summary">Digit buttons hide after pressing</string>
 	<!-- The title and summary of the "bad maths" option. This option highlights cages with incorrect maths. -->
 	<string name="option_mark_bad_maths_title">Mark bad maths</string>
 	<string name="option_mark_bad_maths_summary">Highlight cages with incorrect maths</string>
-	<!-- The title and summary of the "bad maths" option. This option highlights cells with digits already in the row or column. -->
+	<!-- This option highlights cells with digits already in the row or column. -->
 	<string name="option_mark_duplicates_title">Mark duplicates</string>
 	<string name="option_mark_duplicates_summary">Highlight duplicate digits in a row or column</string>
 	<!-- The title and summary of the "sound effects" option. -->

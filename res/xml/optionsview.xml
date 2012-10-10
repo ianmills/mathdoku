@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen  
-    xmlns:android="http://schemas.android.com/apk/res/android">  
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
 	<PreferenceCategory android:title="@string/options_group_assistance" android:key="Assistance">
 		<CheckBoxPreference
 			android:key="badmaths"
@@ -12,6 +12,14 @@
 			android:title="@string/option_mark_duplicates_title"
 			android:summary="@string/option_mark_duplicates_summary"
 			android:defaultValue="true" />
+		<ListPreference
+			android:title="@string/option_invalid_maybes_title"
+			android:summary="@string/option_invalid_maybes_summary"
+			android:key="invalidmaybes"
+			android:entries="@array/invalidMaybesTexts"
+			android:entryValues="@array/invalidMaybesValues"
+			android:defaultValue="I" />
+
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/options_group_puzzle" android:key="Puzzle Generation">
 		<ListPreference
@@ -51,4 +59,4 @@
 			android:defaultValue="true" />
 	</PreferenceCategory>
 
-</PreferenceScreen>  
+</PreferenceScreen>
