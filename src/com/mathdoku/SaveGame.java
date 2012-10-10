@@ -12,15 +12,17 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import android.util.Log;
+import android.content.Context;
 
 public class SaveGame {
-	public static final String saveFilename = "/data/data/net.cactii.mathdoku/savedgame";
-	public String filename;
+	private static final String saveFilename = "savedgame";
+    private Context mContext;
+	private String filename;
 	
-	public SaveGame() {
-		this.filename = SaveGame.saveFilename;
+	public SaveGame(Context context) {
+		this.filename = context.getFilesDir() + SaveGame.saveFilename;
 	}
-	public SaveGame(String filename) {
+	public SaveGame(Context context, String filename) {
 		this.filename = filename;
 	}
 	

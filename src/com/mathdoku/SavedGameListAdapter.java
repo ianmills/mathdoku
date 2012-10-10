@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 public class SavedGameListAdapter extends BaseAdapter {
 	
-	public static final String SAVEDGAME_DIR = "/data/data/net.cactii.mathdoku/";
 	public ArrayList<String> mGameFiles;
 	private LayoutInflater inflater;
 	private SavedGameList mContext;
@@ -40,8 +39,8 @@ public class SavedGameListAdapter extends BaseAdapter {
 		long save2 = 0;
 		public int compare(String object1, String object2) {
 			try {
-				save1 = new SaveGame(SAVEDGAME_DIR + "/" + object1).ReadDate();
-				save2 = new SaveGame(SAVEDGAME_DIR + "/" + object2).ReadDate();
+				save1 = new SaveGame(mContext, object1).ReadDate();
+				save2 = new SaveGame(mContext, object2).ReadDate();
 			}
 			catch (Exception e) {
 				//
@@ -53,7 +52,7 @@ public class SavedGameListAdapter extends BaseAdapter {
 	
 	public void refreshFiles() {
 		this.mGameFiles.clear();
-		File dir = new File(SAVEDGAME_DIR);
+		File dir = mContext.getFilesDir();
 		String[] allFiles = dir.list();
 		for (String entryName : allFiles)
 			if (entryName.startsWith("savedgame_"))
@@ -114,7 +113,7 @@ public class SavedGameListAdapter extends BaseAdapter {
 		}
 		TextView label = (TextView)convertView.findViewById(R.id.savedGridText);
 
-		final String saveFile = SAVEDGAME_DIR + "/" + this.mGameFiles.get(position-1);
+		final String saveFile = this.mGameFiles.get(position-1);
 		
 		grid.mContext = this.mContext;
 		grid.mFace = this.mFace;
@@ -122,7 +121,7 @@ public class SavedGameListAdapter extends BaseAdapter {
 	    grid.mDupedigits = PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("dupedigits", true);
 	    grid.mBadMaths = PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("badmaths", true);
 
-		SaveGame saver = new SaveGame(saveFile);
+		SaveGame saver = new SaveGame(mContext, saveFile);
 		try {
 			saver.Restore(grid);
 		}

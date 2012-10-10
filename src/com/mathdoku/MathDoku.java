@@ -187,7 +187,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         kenKenGrid.setFocusableInTouchMode(true);
 
         registerForContextMenu(kenKenGrid);
-        SaveGame saver = new SaveGame();
+        SaveGame saver = new SaveGame(this);
         if (saver.Restore(kenKenGrid)) {
             setButtonVisibility(kenKenGrid.mGridSize);
             kenKenGrid.mActive = true;
@@ -202,7 +202,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
 
     public void onPause() {
         if (kenKenGrid.mGridSize > 3) {
-            SaveGame saver = new SaveGame();
+            SaveGame saver = new SaveGame(this);
             saver.Save(kenKenGrid);
         }
         if (wakeLock.isHeld())
@@ -251,7 +251,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         Bundle extras = data.getExtras();
         String filename = extras.getString("filename");
         Log.d("Mathdoku", "Loading game: " + filename);
-        SaveGame saver = new SaveGame(filename);
+        SaveGame saver = new SaveGame(this, filename);
         if (saver.Restore(kenKenGrid)) {
             setButtonVisibility(kenKenGrid.mGridSize);
             kenKenGrid.mActive = true;
