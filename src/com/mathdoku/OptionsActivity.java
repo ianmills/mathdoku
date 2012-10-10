@@ -5,15 +5,12 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-public class OptionsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
-    
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      addPreferencesFromResource(R.xml.optionsview); 
-  }
-  
-  public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+public class OptionsActivity extends PreferenceActivity {
 
-  }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.xml.optionsview);
+    }
+
 }

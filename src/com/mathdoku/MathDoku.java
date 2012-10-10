@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.graphics.Typeface;
@@ -45,7 +46,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.R.style;
 
-public class MathDoku extends Activity {
+public class MathDoku extends Activity implements OnSharedPreferenceChangeListener {
     private final String TAG = "MathDoku";
     private final int SHOW_SOLUTION = 105;
     private final int CLEAR_CAGE = 103;
@@ -79,6 +80,7 @@ public class MathDoku extends Activity {
         setContentView(R.layout.main);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences.registerOnSharedPreferenceChangeListener(this);
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "athdoku");
 		ActionBar ab = getActionBar();
@@ -192,6 +194,12 @@ public class MathDoku extends Activity {
         }
     }
 
+    @Override
+    public void onSharedPreferenceChanged (SharedPreferences sharedPreferences, String key) {
+        Log.e(TAG, "Pref changed : key: " + key);
+        kenKenGrid.invalidate();
+    }
+
     public void onPause() {
         if (kenKenGrid.mGridSize > 3) {
             SaveGame saver = new SaveGame();
@@ -238,9 +246,6 @@ public class MathDoku extends Activity {
 
     protected void onActivityResult(int requestCode, int resultCode,
               Intent data) {
-        if (requestCode == 0 && kenKenGrid.mActive) {
-            kenKenGrid.invalidate();
-        }
         if (requestCode != 7 || resultCode != Activity.RESULT_OK)
           return;
         Bundle extras = data.getExtras();
