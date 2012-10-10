@@ -447,6 +447,11 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
             }
         } else {
             if (kenKenGrid.mSelectedCell.isUserValueSet()) {
+                int userVal = kenKenGrid.mSelectedCell.getUserValue();
+                if (!kenKenGrid.mSelectedCell.mPossibles.contains(userVal)) {
+                    kenKenGrid.mSelectedCell.togglePossible(userVal);
+                }
+
                 kenKenGrid.mSelectedCell.clearUserValue();
             }
             kenKenGrid.mSelectedCell.togglePossible(value);
