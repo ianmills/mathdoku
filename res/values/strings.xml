@@ -95,6 +95,7 @@
 	<string name="context_menu_clear_grid">Clear entire grid</string>
 	<!-- The context menu to show the completed grid. -->
 	<string name="context_menu_show_solution">Show solution</string>
+	<string name="context_menu_populate_maybes">Populate Maybes</string>
 	<!-- The confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
 	<string name="context_menu_clear_grid_confirmation_message">Are you sure you want to clear the entire grid?</string>
 	<string name="context_menu_clear_grid_confirmation_title">Clear entire grid?</string>

@@ -48,11 +48,12 @@ import android.R.style;
 
 public class MathDoku extends Activity implements OnSharedPreferenceChangeListener {
     private final String TAG = "MathDoku";
-    private final int SHOW_SOLUTION = 105;
+    private final int USE_MAYBES = 101;
+    private final int REVEAL_CELL = 102;
     private final int CLEAR_CAGE = 103;
     private final int CLEAR_GRID = 104;
-    private final int REVEAL_CELL = 102;
-    private final int USE_MAYBES = 101;
+    private final int SHOW_SOLUTION = 105;
+    private final int POPULATE_MAYBES = 106;
     private GridView kenKenGrid;
     private TextView solvedText;
     private TextView pressMenu;
@@ -295,6 +296,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         }
 
         menu.add(0, CLEAR_GRID, 0,  R.string.context_menu_clear_grid);
+        menu.add(0, POPULATE_MAYBES, 0, R.string.context_menu_populate_maybes);
         menu.setHeaderTitle(R.string.application_name);
 
     }
@@ -336,6 +338,16 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
                 kenKenGrid.Solve();
                 pressMenu.setVisibility(View.VISIBLE);
                 break;
+            case POPULATE_MAYBES:
+                for (GridCell cell : kenKenGrid.mCells) {
+                    cell.mPossibles.clear();
+                    for (int i=1;i<=kenKenGrid.mGridSize; i++) {
+                        cell.mPossibles.add(i);
+                    }
+                }
+                kenKenGrid.invalidate();
+                break;
+
         }
         return super.onContextItemSelected(item);
     }
