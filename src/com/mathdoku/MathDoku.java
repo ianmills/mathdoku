@@ -70,6 +70,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
     private Animation solvedAnimation;
 
     private SharedPreferences preferences;
+    String invalidMaybePref = "I";
 
     private final Handler mHandler = new Handler();
     private WakeLock wakeLock;
@@ -84,8 +85,8 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         preferences.registerOnSharedPreferenceChangeListener(this);
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "athdoku");
-		ActionBar ab = getActionBar();
-		ab.setDisplayShowTitleEnabled(false);
+        ActionBar ab = getActionBar();
+        ab.setDisplayShowTitleEnabled(false);
         topLayout = (LinearLayout)findViewById(R.id.topLayout);
         kenKenGrid = (GridView)findViewById(R.id.gridView);
         kenKenGrid.mContext = this;
@@ -340,10 +341,16 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
                 break;
             case POPULATE_MAYBES:
                 for (GridCell cell : kenKenGrid.mCells) {
+                    if (cell.isUserValueSet()) {
+                        continue;
+                    }
                     cell.mPossibles.clear();
                     for (int i=1;i<=kenKenGrid.mGridSize; i++) {
                         cell.mPossibles.add(i);
                     }
+                }
+                if (invalidMaybePref != null && invalidMaybePref.equals("C")) {
+                    while (kenKenGrid.clearInvalidPossibles() == true);
                 }
                 kenKenGrid.invalidate();
                 break;
@@ -470,7 +477,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
             if (kenKenGrid.mSelectedCell.mPossibles.size() == 1) {
                 kenKenGrid.mSelectedCell.setUserValue(kenKenGrid.mSelectedCell.mPossibles.get(0));
             }
-            String invalidMaybePref = preferences.getString("invalidmaybes", "I");
+            invalidMaybePref = preferences.getString("invalidmaybes", "I");
             if (invalidMaybePref != null && invalidMaybePref.equals("C")) {
                 while (kenKenGrid.clearInvalidPossibles() == true);
             }
