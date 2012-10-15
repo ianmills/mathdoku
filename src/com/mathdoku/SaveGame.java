@@ -34,7 +34,9 @@ public class SaveGame {
 				long now = System.currentTimeMillis();
 				writer.write(now + "\n");
 				writer.write(view.mGridSize + "\n");
-				writer.write(view.mActive + "\n");
+				writer.write(view.isActive() + "\n");
+                writer.write("Duration:");
+                writer.write(Integer.toString(view.game_duration) + "\n");
 				for (GridCell cell : view.mCells) {
 					writer.write("CELL:");
 					writer.write(cell.mCellNumber + ":");
@@ -128,11 +130,16 @@ public class SaveGame {
 	        view.mDate = Long.parseLong(br.readLine());
 	        view.mGridSize = Integer.parseInt(br.readLine());
 	        if (br.readLine().equals("true"))
-	        	view.mActive = true;
+	        	view.setActive(true);
 	        else
-	        	view.mActive = false;
+	        	view.setActive(false);
 	        view.mCells = new ArrayList<GridCell>();
 	        while ((line = br.readLine()) != null) {
+                if (line.startsWith("Duration")) {
+                    String parts[] = line.split(":");
+                    view.game_duration = Integer.parseInt(parts[1]);
+                    continue;
+                }
 	        	if (!line.startsWith("CELL:")) break;
 	        	cellParts = line.split(":");
 	        	int cellNum = Integer.parseInt(cellParts[1]);

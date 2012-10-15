@@ -54,6 +54,8 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
     private final int CLEAR_GRID = 104;
     private final int SHOW_SOLUTION = 105;
     private final int POPULATE_MAYBES = 106;
+
+    private final int LOAD_GAME = 7;
     private GridView kenKenGrid;
     private TextView solvedText;
     private TextView pressMenu;
@@ -86,7 +88,8 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "athdoku");
         ActionBar ab = getActionBar();
-        ab.setDisplayShowTitleEnabled(false);
+        ab.setDisplayShowTitleEnabled(true);
+        ab.setTitle("MathDoku");
         topLayout = (LinearLayout)findViewById(R.id.topLayout);
         kenKenGrid = (GridView)findViewById(R.id.gridView);
         kenKenGrid.mContext = this;
@@ -154,7 +157,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
                 @Override
                 public void puzzleSolved() {
                     // TODO Auto-generated method stub
-                    if (kenKenGrid.mActive) {
+                    if (kenKenGrid.isActive()) {
                         Toast.makeText(kenKenGrid.mContext, R.string.main_ui_solved_messsage, Toast.LENGTH_SHORT).show();
                     }
                     controls.setVisibility(View.GONE);
@@ -192,9 +195,10 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         SaveGame saver = new SaveGame(this);
         if (saver.Restore(kenKenGrid)) {
             setButtonVisibility(kenKenGrid.mGridSize);
-            kenKenGrid.mActive = true;
+            kenKenGrid.setActive(true);
         }
     }
+
 
     @Override
     public void onSharedPreferenceChanged (SharedPreferences sharedPreferences, String key) {
@@ -206,6 +210,8 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         if (kenKenGrid.mGridSize > 3) {
             SaveGame saver = new SaveGame(this);
             saver.Save(kenKenGrid);
+            kenKenGrid.setActive(false);
+            kenKenGrid.onPause();
         }
         if (wakeLock.isHeld())
             wakeLock.release();
@@ -224,7 +230,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         }
         kenKenGrid.mDupedigits = preferences.getBoolean("dupedigits", true);
         kenKenGrid.mBadMaths = preferences.getBoolean("badmaths", true);
-        if (kenKenGrid.mActive && !preferences.getBoolean("hideselector", false)) {
+        if (kenKenGrid.isActive() && !preferences.getBoolean("hideselector", false)) {
             controls.setVisibility(View.VISIBLE);
         }
         setSoundEffectsEnabled(preferences.getBoolean("soundeffects", true));
@@ -248,7 +254,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
 
     protected void onActivityResult(int requestCode, int resultCode,
               Intent data) {
-        if (requestCode != 7 || resultCode != Activity.RESULT_OK)
+        if (requestCode != LOAD_GAME || resultCode != Activity.RESULT_OK)
           return;
         Bundle extras = data.getExtras();
         String filename = extras.getString("filename");
@@ -256,7 +262,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         SaveGame saver = new SaveGame(this, filename);
         if (saver.Restore(kenKenGrid)) {
             setButtonVisibility(kenKenGrid.mGridSize);
-            kenKenGrid.mActive = true;
+            kenKenGrid.setActive(true);
         }
     }
 
@@ -278,7 +284,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         super.onCreateContextMenu(menu, v, menuInfo);
         boolean showClearCageMaybes = false;
         boolean showUseMaybes = false;
-        if (!kenKenGrid.mActive)
+        if (!kenKenGrid.isActive())
             return;
         for (GridCell cell : kenKenGrid.mCages.get(kenKenGrid.mSelectedCell.mCageId).mCells) {
             if (cell.isUserValueSet() || cell.mPossibles.size() > 0) {
@@ -406,11 +412,11 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         switch (menuItem.getItemId()) {
         case R.id.saveload:
             Intent i = new Intent(this, SavedGameList.class);
-            startActivityForResult(i, 7);
+            startActivityForResult(i, LOAD_GAME);
             return true;
             case R.id.checkprogress:
             int textId;
-            if (kenKenGrid.mActive == false) {
+            if (kenKenGrid.isActive() == false) {
                 return false;
             }
             if (kenKenGrid.isSolutionValidSoFar())

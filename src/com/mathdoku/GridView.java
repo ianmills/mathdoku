@@ -2,12 +2,15 @@ package com.mathdoku;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.TimerTask;
+import java.util.Timer;
 
 import com.mathdoku.DLX.SolveType;
 import com.mathdoku.MathDokuDLX;
 import com.mathdoku.GridCell;
 
 import android.app.Activity;
+import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
@@ -15,6 +18,7 @@ import android.graphics.DiscretePathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Typeface;
+import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -40,7 +44,7 @@ public class GridView extends View implements OnTouchListener  {
     public ArrayList<GridCage> mCages;
     public ArrayList<GridCell> mCells;
 
-    public boolean mActive;
+    private boolean mActive;
     public boolean mSelectorShown = false;
     public float mTrackPosX;
     public float mTrackPosY;
@@ -58,6 +62,9 @@ public class GridView extends View implements OnTouchListener  {
 	// Date of current game (used for saved games)
 	public long mDate;
 	public int mTheme;
+    private Timer mTimer;
+    private TimerTask mTimerTask;
+    public int game_duration;
 
     public GridView(Context context) {
         super(context);
@@ -74,11 +81,14 @@ public class GridView extends View implements OnTouchListener  {
     }
 
 
-    public void initGridView() {
-
+    private void initGridView() {
         mSolvedListener = null;
         mDupedigits = true;
         mBadMaths = true;
+        game_duration = 0;
+        mTimerTask = new MathDokuTimerTask();
+        mTimer = new Timer();
+        mTimer.scheduleAtFixedRate(mTimerTask, 1000, 1000);
 
         mGridPaint = new Paint();
         mGridPaint.setColor(0x80000000);
@@ -92,9 +102,39 @@ public class GridView extends View implements OnTouchListener  {
 
         mCurrentWidth = 0;
         mGridSize = 0;
-        mActive = false;
+        setActive(false);
         setOnTouchListener((OnTouchListener) this);
     }
+
+    public void setActive(boolean active) {
+        mActive = active;
+    }
+
+    public boolean isActive() {
+        return mActive;
+    }
+
+    public void onPause() {
+        mTimerTask.cancel();
+        mTimer.purge();
+    }
+
+    public class MathDokuTimerTask extends TimerTask {
+        public MathDokuTimerTask() {
+        }
+
+        @Override
+        public void run() {
+            if (mActive) {
+                game_duration++;
+                post(new Runnable() {
+                    public void run() {
+                        mContext.getActionBar().setSubtitle(DateUtils.formatElapsedTime(game_duration));
+                    }
+                });
+            }
+        }
+    };
 
     public void setTheme(int theme) {
         if (theme == THEME_CARVED) {
@@ -144,6 +184,8 @@ public class GridView extends View implements OnTouchListener  {
     public synchronized void reCreate(boolean hideOperators) {
         int num_solns;
         int num_attempts = 0;
+        setActive(false);
+        game_duration = 0;
         mRandom = new Random();
         if (mGridSize < 4) return;
         do {
@@ -162,7 +204,7 @@ public class GridView extends View implements OnTouchListener  {
             Log.d ("MathDoku", "Num Solns = " + num_solns);
         } while (num_solns > 1);
         Log.d ("MathDoku", "Num Attempts = " + num_attempts);
-        mActive = true;
+        setActive(true);
         mSelectorShown = false;
         setTheme(mTheme);
     }
@@ -421,7 +463,7 @@ public class GridView extends View implements OnTouchListener  {
                 mSolvedListener.puzzleSolved();
             if (mSelectedCell != null)
                 mSelectedCell.mSelected = false;
-            mActive = false;
+            setActive(false);
         }
     }
 
