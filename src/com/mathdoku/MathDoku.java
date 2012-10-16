@@ -117,7 +117,9 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         hideselector = preferences.getBoolean("hideselector", false);
         soundEffectsEnabled = preferences.getBoolean("soundeffects", true);
         hideOperators = preferences.getString("hideoperatorsigns", "F");
-        kenKenGrid.setMarkInvalidMaybes(preferences.getString("invalidmaybes", "I").equals("M"));
+        String invalidmaybes = preferences.getString("invalidmaybes", "I");
+        kenKenGrid.setMarkInvalidMaybes(invalidmaybes.equals("M"));
+        clearInvalids = invalidmaybes.equals("C");
         kenKenGrid.setMaybe3x3(preferences.getBoolean("maybe3x3", true));
         kenKenGrid.hideselector = hideselector;
         kenKenGrid.mDupedigits = preferences.getBoolean("dupedigits", true);
