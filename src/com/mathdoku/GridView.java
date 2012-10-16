@@ -18,7 +18,6 @@ import com.mathdoku.DLX.SolveType;
 import com.mathdoku.MathDokuDLX;
 import com.mathdoku.GridCell;
 
-import android.app.Activity;
 import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -33,25 +32,36 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Button;
 import android.view.SoundEffectConstants;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Animation.AnimationListener;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
+import android.widget.LinearLayout;
+import android.preference.PreferenceManager;
+import android.content.SharedPreferences;
 
 public class GridView extends View implements OnTouchListener  {
 
     private OnSolvedListener mSolvedListener;
-    private OnGridTouchListener mTouchedListener;
     public Button digits[];
+    public LinearLayout controls;
+    public SharedPreferences preferences;
+    private Animation outAnimation;
+    private ActionBar mActionBar;
 
     public int mGridSize;
     public Random mRandom;
-    public Activity mContext;
+    public Context mContext;
 
     public ArrayList<GridCage> mCages;
     public ArrayList<GridCell> mCells;
 
     private boolean mActive;
     public boolean mSelectorShown = false;
+    public boolean markInvalidMaybes = false;
+    public boolean maybe3x3 = false;
     public float mTrackPosX;
     public float mTrackPosY;
     public GridCell mSelectedCell;
@@ -76,15 +86,18 @@ public class GridView extends View implements OnTouchListener  {
 
     public GridView(Context context) {
         super(context);
+        mContext = context;
         initGridView();
     }
 
     public GridView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
         initGridView();
     }
     public GridView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mContext = context;
         initGridView();
     }
 
@@ -94,6 +107,15 @@ public class GridView extends View implements OnTouchListener  {
         mBadMaths = true;
         game_duration = 0;
         mTimer = new Timer();
+
+        outAnimation = AnimationUtils.loadAnimation(mContext, R.anim.selectorzoomout);
+        outAnimation.setAnimationListener(new AnimationListener() {
+            public void onAnimationEnd(Animation animation) {
+              controls.setVisibility(View.GONE);
+            }
+            public void onAnimationRepeat(Animation animation) {}
+            public void onAnimationStart(Animation animation) {}
+          });
 
         mGridPaint = new Paint();
         mGridPaint.setColor(0x80000000);
@@ -124,7 +146,8 @@ public class GridView extends View implements OnTouchListener  {
         mTimerTask = null;
     }
 
-    public void onResume() {
+    public void onResume(ActionBar ab) {
+        mActionBar = ab;
         mTimerTask = new MathDokuTimerTask();
         mTimer.scheduleAtFixedRate(mTimerTask, 1000, 1000);
     }
@@ -139,7 +162,7 @@ public class GridView extends View implements OnTouchListener  {
                 game_duration++;
                 post(new Runnable() {
                     public void run() {
-                        mContext.getActionBar().setSubtitle(DateUtils.formatElapsedTime(game_duration));
+                        mActionBar.setSubtitle(DateUtils.formatElapsedTime(game_duration));
                     }
                 });
             }
@@ -413,6 +436,7 @@ public class GridView extends View implements OnTouchListener  {
 
     @Override
     protected synchronized void onDraw(Canvas canvas) {
+        Log.e(MathDoku.TAG, "onDraw");
         if (mGridSize < 4) return;
         if (mCages == null) return;
 
@@ -486,6 +510,34 @@ public class GridView extends View implements OnTouchListener  {
         return getCellAt(row, col);
     }
 
+    public void setMarkInvalidMaybes(boolean value) {
+        markInvalidMaybes = value;
+    }
+
+    public void setMaybe3x3(boolean value) {
+        maybe3x3 = value;
+    }
+
+    public void gridTouched(GridCell cell) {
+        if (controls.getVisibility() == View.VISIBLE) {
+            // digitSelector.setVisibility(View.GONE);
+            if (preferences.getBoolean("hideselector", false)) {
+                controls.startAnimation(outAnimation);
+                //cell.mSelected = false;
+                mSelectorShown = false;
+            }
+            requestFocus();
+        } else {
+            if (preferences.getBoolean("hideselector", false)) {
+                controls.setVisibility(View.VISIBLE);
+                Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.selectorzoomin);
+                controls.startAnimation(animation);
+                mSelectorShown = true;
+            }
+            controls.requestFocus();
+        }
+    }
+
     public boolean onTouch(View arg0, MotionEvent event) {
         if (event.getAction() != MotionEvent.ACTION_DOWN)
             return false;
@@ -519,11 +571,9 @@ public class GridView extends View implements OnTouchListener  {
             c.mSelected = false;
             mCages.get(c.mCageId).mSelected = false;
         }
-        if (mTouchedListener != null) {
-            mSelectedCell.mSelected = true;
-            mCages.get(mSelectedCell.mCageId).mSelected = true;
-            mTouchedListener.gridTouched(mSelectedCell);
-        }
+        mSelectedCell.mSelected = true;
+        mCages.get(mSelectedCell.mCageId).mSelected = true;
+        gridTouched(mSelectedCell);
         invalidate();
         return false;
     }
@@ -536,10 +586,8 @@ public class GridView extends View implements OnTouchListener  {
         // On press event, take selected cell, call touched listener
         // which will popup the digit selector.
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if (mTouchedListener != null) {
-                mSelectedCell.mSelected = true;
-                mTouchedListener.gridTouched(mSelectedCell);
-            }
+            mSelectedCell.mSelected = true;
+            gridTouched(mSelectedCell);
             return true;
         }
         // A multiplier amplifies the trackball event values
@@ -572,7 +620,7 @@ public class GridView extends View implements OnTouchListener  {
         if (mSelectedCell != null) {
             mSelectedCell.mSelected = false;
             if (mSelectedCell != cell)
-                mTouchedListener.gridTouched(cell);
+                gridTouched(cell);
         }
         for (GridCell c : mCells) {
             c.mSelected = false;
@@ -682,13 +730,6 @@ public class GridView extends View implements OnTouchListener  {
     }
     public abstract class OnSolvedListener {
         public abstract void puzzleSolved();
-    }
-
-    public void setOnGridTouchListener(OnGridTouchListener listener) {
-        mTouchedListener = listener;
-    }
-    public abstract class OnGridTouchListener {
-        public abstract void gridTouched(GridCell cell);
     }
 
     private void writeCell(GridCell cell) throws java.io.IOException {

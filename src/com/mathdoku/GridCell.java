@@ -3,7 +3,7 @@ package com.mathdoku;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.DiscretePathEffect;
@@ -306,14 +306,7 @@ public class GridCell {
         }
 
         if (mPossibles.size()>1) {
-            Activity activity = mGridView.mContext;
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-            String invalidMaybePref = prefs.getString("invalidmaybes", "I");
-            boolean markInvalidMaybes = false;
-            if (invalidMaybePref != null && invalidMaybePref.equals("M")) {
-                markInvalidMaybes = true;
-            }
-            if (prefs.getBoolean("maybe3x3", true)) {
+            if (mGridView.maybe3x3) {
                 this.mPossiblesPaint.setFakeBoldText(true);
                 this.mPossiblesPaint.setTextSize((int)(cellSize/4.5));
                 int xOffset = (int) (cellSize/3);
@@ -323,7 +316,7 @@ public class GridCell {
                 for (int i = 0 ; i < mPossibles.size() ; i++) {
                     int possible = mPossibles.get(i);
                     mPossiblesPaint.setColor(0xFF000000);
-                    if (markInvalidMaybes && (mGridView.getNumValueInRow(this, possible) >= 1 ||
+                    if (mGridView.markInvalidMaybes && (mGridView.getNumValueInRow(this, possible) >= 1 ||
                                 mGridView.getNumValueInCol(this, possible) >= 1)) {
                         mPossiblesPaint.setColor(0x50FF0000);
                                 }
@@ -338,7 +331,7 @@ public class GridCell {
                 int offset = 0;
                 for (int i = 0 ; i < mPossibles.size() ; i++) {
                     int possible = mPossibles.get(i);
-                    if (markInvalidMaybes && (mGridView.getNumValueInRow(this, possible) >= 1 ||
+                    if (mGridView.markInvalidMaybes && (mGridView.getNumValueInRow(this, possible) >= 1 ||
                                 mGridView.getNumValueInCol(this, possible) >= 1)) {
                         mPossiblesPaint.setColor(0x50FF0000);
                     } else {

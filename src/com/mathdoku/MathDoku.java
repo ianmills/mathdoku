@@ -75,6 +75,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
     private Animation solvedAnimation;
 
     private SharedPreferences preferences;
+    boolean clearInvalids = false;
     String invalidMaybePref = "I";
 
     private final Handler mHandler = new Handler();
@@ -95,7 +96,6 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         ab.setTitle("MathDoku");
         topLayout = (LinearLayout)findViewById(R.id.topLayout);
         kenKenGrid = (GridView)findViewById(R.id.gridView);
-        kenKenGrid.mContext = this;
         solvedText = (TextView)findViewById(R.id.solvedText);
         kenKenGrid.animText = solvedText;
         pressMenu = (TextView)findViewById(R.id.pressMenu);
@@ -107,12 +107,16 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
             numpad.addView(digits[i]);
         }
         kenKenGrid.digits = digits;
+        kenKenGrid.controls = controls;
+        kenKenGrid.setMarkInvalidMaybes(preferences.getString("invalidmaybes", "I").equals("M"));
+        kenKenGrid.setMaybe3x3(preferences.getBoolean("maybe3x3", true));
+        kenKenGrid.preferences = preferences;
         clearDigit = (Button)findViewById(R.id.clearButton);
         allDigit = (Button)findViewById(R.id.allButton);
 
-        sound_effect_views = new View[] { this.kenKenGrid, this.digits[0], this.digits[1],
-            digits[2], this.digits[3], this.digits[4], this.digits[5], this.digits[6], this.digits[7], this.digits[8],
-            clearDigit, this.allDigit
+        sound_effect_views = new View[] { kenKenGrid, digits[0], digits[1],
+            digits[2], digits[3], digits[4], digits[5], digits[6], digits[7], digits[8],
+            clearDigit, allDigit
         };
 
         solvedAnimation = AnimationUtils.loadAnimation(this, R.anim.solvedanim);
@@ -123,38 +127,6 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
             public void onAnimationRepeat(Animation animation) {}
             public void onAnimationStart(Animation animation) {}
           });
-
-        outAnimation = AnimationUtils.loadAnimation(this, R.anim.selectorzoomout);
-        outAnimation.setAnimationListener(new AnimationListener() {
-            public void onAnimationEnd(Animation animation) {
-              controls.setVisibility(View.GONE);
-            }
-            public void onAnimationRepeat(Animation animation) {}
-            public void onAnimationStart(Animation animation) {}
-          });
-
-        kenKenGrid.setOnGridTouchListener(this.kenKenGrid.new OnGridTouchListener() {
-            @Override
-            public void gridTouched(GridCell cell) {
-                if (controls.getVisibility() == View.VISIBLE) {
-                    // digitSelector.setVisibility(View.GONE);
-                    if (preferences.getBoolean("hideselector", false)) {
-                        controls.startAnimation(outAnimation);
-                        //cell.mSelected = false;
-                        kenKenGrid.mSelectorShown = false;
-                    }
-                    kenKenGrid.requestFocus();
-                } else {
-                    if (preferences.getBoolean("hideselector", false)) {
-                        controls.setVisibility(View.VISIBLE);
-                        Animation animation = AnimationUtils.loadAnimation(kenKenGrid.mContext, R.anim.selectorzoomin);
-                        controls.startAnimation(animation);
-                        kenKenGrid.mSelectorShown = true;
-                    }
-                    controls.requestFocus();
-                }
-            }
-        });
 
         kenKenGrid.setSolvedHandler(kenKenGrid.new OnSolvedListener() {
                 @Override
@@ -204,6 +176,13 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
     @Override
     public void onSharedPreferenceChanged (SharedPreferences sharedPreferences, String key) {
         Log.e(TAG, "Pref changed : key: " + key);
+        if (key.equals("maybe3x3")) {
+            kenKenGrid.setMaybe3x3(preferences.getBoolean("maybe3x3", true));
+        } else if (key.equals("invalidmaybes")) {
+            String invalidmaybes = preferences.getString("invalidmaybes", "I");
+            kenKenGrid.setMarkInvalidMaybes(invalidmaybes.equals("M"));
+            clearInvalids = invalidmaybes.equals("C");
+        }
         kenKenGrid.invalidate();
     }
 
@@ -229,7 +208,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         setSoundEffectsEnabled(preferences.getBoolean("soundeffects", true));
 
         kenKenGrid.setActive(true);
-        kenKenGrid.onResume();
+        kenKenGrid.onResume(getActionBar());
         super.onResume();
     }
 
