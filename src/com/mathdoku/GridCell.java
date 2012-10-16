@@ -130,9 +130,9 @@ public class GridCell {
     }
 
     public String toString() {
-        String str = "<cell:" + this.mCellNumber + " col:" + this.mColumn +
-            " row:" + this.mRow + " posX:" + this.mPosX + " posY:" +
-            this.mPosY + " val:" + this.mValue + ", userval: " + this.mUserValue + ">";
+        String str = "<cell:" + mCellNumber + " col:" + mColumn +
+            " row:" + mRow + " posX:" + mPosX + " posY:" +
+            mPosY + " val:" + mValue + ", userval: " + mUserValue + ">";
         return str;
     }
 
@@ -146,29 +146,29 @@ public class GridCell {
         borders[1] = east;
         borders[2] = south;
         borders[3] = west;
-        this.mBorderTypes = borders;
+        mBorderTypes = borders;
     }
 
     /* Returns the Paint object for the given border of this cell. */
     private Paint getBorderPaint(int border) {
-        switch (this.mBorderTypes[border]) {
+        switch (mBorderTypes[border]) {
             case BORDER_NONE:
                 return null;
             case BORDER_SOLID :
-                return this.mBorderPaint;
+                return mBorderPaint;
             case BORDER_WARN :
-                return this.mWrongBorderPaint;
+                return mWrongBorderPaint;
             case BORDER_CAGE_SELECTED :
-                return this.mCageSelectedPaint;
+                return mCageSelectedPaint;
         }
         return null;
     }
 
     public void togglePossible(int digit) {
-        if (this.mPossibles.indexOf(new Integer(digit)) == -1)
-            this.mPossibles.add(digit);
+        if (mPossibles.indexOf(new Integer(digit)) == -1)
+            mPossibles.add(digit);
         else
-            this.mPossibles.remove(new Integer(digit));
+            mPossibles.remove(new Integer(digit));
         Collections.sort(mPossibles);
     }
 
@@ -181,7 +181,7 @@ public class GridCell {
     }
 
     public void setUserValue(int digit) {
-        this.mUserValue = digit;
+        mUserValue = digit;
         mInvalidHighlight = false;
     }
 
@@ -201,84 +201,84 @@ public class GridCell {
     }
 
     public void setInvalidHighlight(boolean value) {
-        this.mInvalidHighlight = value;
+        mInvalidHighlight = value;
     }
     public boolean getInvalidHighlight() {
-        return this.mInvalidHighlight;
+        return mInvalidHighlight;
     }
 
     /* Draw the cell. Border and text is drawn. */
     public void onDraw(Canvas canvas, boolean onlyBorders) {
 
         // Calculate x and y for the cell origin (topleft)
-        float cellSize = (float)this.mGridView.getMeasuredWidth() / (float)this.mGridView.mGridSize;
-        this.mPosX = cellSize * this.mColumn;
-        this.mPosY = cellSize * this.mRow;
+        float cellSize = (float)mGridView.getMeasuredWidth() / (float)mGridView.mGridSize;
+        mPosX = cellSize * mColumn;
+        mPosY = cellSize * mRow;
 
-        float north = this.mPosY;
-        float south = this.mPosY + cellSize;
-        float east = this.mPosX + cellSize;
-        float west = this.mPosX;
-        GridCell cellAbove = this.mGridView.getCellAt(this.mRow-1, this.mColumn);
-        GridCell cellLeft = this.mGridView.getCellAt(this.mRow, this.mColumn-1);
-        GridCell cellRight = this.mGridView.getCellAt(this.mRow, this.mColumn+1);
-        GridCell cellBelow = this.mGridView.getCellAt(this.mRow+1, this.mColumn);
+        float north = mPosY;
+        float south = mPosY + cellSize;
+        float east = mPosX + cellSize;
+        float west = mPosX;
+        GridCell cellAbove = mGridView.getCellAt(mRow-1, mColumn);
+        GridCell cellLeft = mGridView.getCellAt(mRow, mColumn-1);
+        GridCell cellRight = mGridView.getCellAt(mRow, mColumn+1);
+        GridCell cellBelow = mGridView.getCellAt(mRow+1, mColumn);
 
         if (!onlyBorders) {
-            if ((this.mShowWarning && this.mGridView.mDupedigits) || this.mInvalidHighlight)
-                canvas.drawRect(west + 1, north+1, east-1, south-1, this.mWarningPaint);
-            if (this.mSelected)
-                canvas.drawRect(west+1, north+1, east-1, south-1, this.mSelectedPaint);
-            if (this.mCheated)
-                canvas.drawRect(west+1, north+1, east-1, south-1, this.mCheatedPaint);
+            if ((mShowWarning && mGridView.mDupedigits) || mInvalidHighlight)
+                canvas.drawRect(west + 1, north+1, east-1, south-1, mWarningPaint);
+            if (mSelected)
+                canvas.drawRect(west+1, north+1, east-1, south-1, mSelectedPaint);
+            if (mCheated)
+                canvas.drawRect(west+1, north+1, east-1, south-1, mCheatedPaint);
         } else {
-            if (this.mBorderTypes[0] > 2)
+            if (mBorderTypes[0] > 2)
                 if (cellAbove == null)
                     north += 2;
                 else
                     north += 1;
-            if (this.mBorderTypes[3] > 2)
+            if (mBorderTypes[3] > 2)
                 if (cellLeft == null)
                     west += 2;
                 else
                     west += 1;
-            if (this.mBorderTypes[1] > 2)
+            if (mBorderTypes[1] > 2)
                 if (cellRight == null)
                     east -= 3;
                 else
                     east -= 2;
-            if (this.mBorderTypes[2] > 2)
+            if (mBorderTypes[2] > 2)
                 if (cellBelow == null)
                     south -= 3;
                 else
                     south -= 2;
         }
         // North
-        Paint borderPaint = this.getBorderPaint(0);
-        if (!onlyBorders && this.mBorderTypes[0] > 2)
-            borderPaint = this.mBorderPaint;
+        Paint borderPaint = getBorderPaint(0);
+        if (!onlyBorders && mBorderTypes[0] > 2)
+            borderPaint = mBorderPaint;
         if (borderPaint != null) {
             canvas.drawLine(west, north, east, north, borderPaint);
         }
 
         // East
-        borderPaint = this.getBorderPaint(1);
-        if (!onlyBorders && this.mBorderTypes[1] > 2)
-            borderPaint = this.mBorderPaint;
+        borderPaint = getBorderPaint(1);
+        if (!onlyBorders && mBorderTypes[1] > 2)
+            borderPaint = mBorderPaint;
         if (borderPaint != null)
             canvas.drawLine(east, north, east, south, borderPaint);
 
         // South
-        borderPaint = this.getBorderPaint(2);
-        if (!onlyBorders && this.mBorderTypes[2] > 2)
-            borderPaint = this.mBorderPaint;
+        borderPaint = getBorderPaint(2);
+        if (!onlyBorders && mBorderTypes[2] > 2)
+            borderPaint = mBorderPaint;
         if (borderPaint != null)
             canvas.drawLine(west, south, east, south, borderPaint);
 
         // West
-        borderPaint = this.getBorderPaint(3);
-        if (!onlyBorders && this.mBorderTypes[3] > 2)
-            borderPaint = this.mBorderPaint;
+        borderPaint = getBorderPaint(3);
+        if (!onlyBorders && mBorderTypes[3] > 2)
+            borderPaint = mBorderPaint;
         if (borderPaint != null) {
             canvas.drawLine(west, north, west, south, borderPaint);
         }
@@ -287,28 +287,28 @@ public class GridCell {
             return;
 
         // Cell value
-        if (this.isUserValueSet()) {
+        if (isUserValueSet()) {
             int textSize = (int)(cellSize*3/4);
-            this.mValuePaint.setTextSize(textSize);
+            mValuePaint.setTextSize(textSize);
             float leftOffset = cellSize/2 - textSize/4;
             float topOffset;
             topOffset = cellSize/2 + textSize/3;
-            canvas.drawText("" + this.mUserValue, this.mPosX + leftOffset, this.mPosY + topOffset, this.mValuePaint);
+            canvas.drawText("" + mUserValue, mPosX + leftOffset, mPosY + topOffset, mValuePaint);
         }
 
         int cageTextSize = (int)(cellSize/3);
-        this.mCageTextPaint.setTextSize(cageTextSize);
+        mCageTextPaint.setTextSize(cageTextSize);
         // Cage text
-        if (!this.mCageText.equals("")) {
-            canvas.drawText(this.mCageText, this.mPosX + 2, this.mPosY + cageTextSize, this.mCageTextPaint);
+        if (!mCageText.equals("")) {
+            canvas.drawText(mCageText, mPosX + 2, mPosY + cageTextSize, mCageTextPaint);
 
-            // canvas.drawText(this.mCageText, this.mPosX + 2, this.mPosY + 13, this.mCageTextPaint);
+            // canvas.drawText(mCageText, mPosX + 2, mPosY + 13, mCageTextPaint);
         }
 
         if (mPossibles.size()>1) {
             if (mGridView.maybe3x3) {
-                this.mPossiblesPaint.setFakeBoldText(true);
-                this.mPossiblesPaint.setTextSize((int)(cellSize/4.5));
+                mPossiblesPaint.setFakeBoldText(true);
+                mPossiblesPaint.setTextSize((int)(cellSize/4.5));
                 int xOffset = (int) (cellSize/3);
                 int yOffset = (int) (cellSize/2) + 1;
                 float xScale = (float) 0.21 * cellSize;
@@ -322,11 +322,11 @@ public class GridCell {
                                 }
                     float xPos = mPosX + xOffset + ((possible-1)%3)*xScale;
                     float yPos = mPosY + yOffset + ((int)(possible-1)/3)*yScale;
-                    canvas.drawText(Integer.toString(possible), xPos, yPos, this.mPossiblesPaint);
+                    canvas.drawText(Integer.toString(possible), xPos, yPos, mPossiblesPaint);
                 }
             }
             else {
-                this.mPossiblesPaint.setFakeBoldText(false);
+                mPossiblesPaint.setFakeBoldText(false);
                 mPossiblesPaint.setTextSize((int)((cellSize*1.5)/mPossibles.size()));
                 int offset = 0;
                 for (int i = 0 ; i < mPossibles.size() ; i++) {
