@@ -44,7 +44,6 @@ import android.content.SharedPreferences;
 
 public class GridView extends View implements OnTouchListener  {
 
-    private OnSolvedListener mSolvedListener;
     public Button digits[];
     public LinearLayout controls;
     public SharedPreferences preferences;
@@ -54,6 +53,7 @@ public class GridView extends View implements OnTouchListener  {
     public int mGridSize;
     public Random mRandom;
     public Context mContext;
+    public MathDoku mMathDoku;
 
     public ArrayList<GridCage> mCages;
     public ArrayList<GridCell> mCells;
@@ -65,7 +65,6 @@ public class GridView extends View implements OnTouchListener  {
     public float mTrackPosX;
     public float mTrackPosY;
     public GridCell mSelectedCell;
-    public TextView animText;
     public int mCurrentWidth;
     public Paint mGridPaint;
     public Paint mBorderPaint;
@@ -102,7 +101,6 @@ public class GridView extends View implements OnTouchListener  {
     }
 
     private void initGridView() {
-        mSolvedListener = null;
         mDupedigits = true;
         mBadMaths = true;
         game_duration = 0;
@@ -484,8 +482,7 @@ public class GridView extends View implements OnTouchListener  {
         }
 
         if (mActive && isSolved()) {
-            if (mSolvedListener != null)
-                mSolvedListener.puzzleSolved();
+            mMathDoku.Solved();
             if (mSelectedCell != null)
                 mSelectedCell.mSelected = false;
             setActive(false);
@@ -723,13 +720,6 @@ public class GridView extends View implements OnTouchListener  {
                 invalids.add(cell);
 
         return invalids;
-    }
-
-    public void setSolvedHandler(OnSolvedListener listener) {
-        mSolvedListener = listener;
-    }
-    public abstract class OnSolvedListener {
-        public abstract void puzzleSolved();
     }
 
     private void writeCell(GridCell cell) throws java.io.IOException {

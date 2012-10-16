@@ -21,29 +21,17 @@
 	    android:layout_height="wrap_content"
 	    android:layout_gravity="left"
 	    />
-	<TextView
-		android:id="@+id/solvedText"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/main_ui_solved_messsage"
-		android:textSize="48dp"
-		android:textColor="#FF000000"
-		android:background="#D0DECA1E"
-		android:layout_marginTop="96dp"
-		android:layout_marginLeft="48dp"
-		android:visibility="invisible"
-	/>
 </RelativeLayout>
 
 	<TextView
-		android:id="@+id/pressMenu"
+		android:id="@+id/solvedText"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="top"
 		android:layout_margin = "5dp"
 		android:textColor="#FF000000"
 		android:textStyle="bold"
-		android:text="@string/press_menu_button_message"
+		android:text="@string/main_ui_solved_messsage"
 	/>
 <LinearLayout android:id="@+id/controls"
     android:orientation="vertical"

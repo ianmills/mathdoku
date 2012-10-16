@@ -61,7 +61,6 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
 
     private GridView kenKenGrid;
     private TextView solvedText;
-    private TextView pressMenu;
     private ProgressDialog mProgressDialog;
 
     private LinearLayout topLayout;
@@ -72,7 +71,6 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
     private View[] sound_effect_views;
     private GridLayout numpad;
     private Animation outAnimation;
-    private Animation solvedAnimation;
 
     private SharedPreferences preferences;
     boolean clearInvalids = false;
@@ -97,8 +95,6 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         topLayout = (LinearLayout)findViewById(R.id.topLayout);
         kenKenGrid = (GridView)findViewById(R.id.gridView);
         solvedText = (TextView)findViewById(R.id.solvedText);
-        kenKenGrid.animText = solvedText;
-        pressMenu = (TextView)findViewById(R.id.pressMenu);
         controls = (LinearLayout)findViewById(R.id.controls);
         numpad = (GridLayout)findViewById(R.id.digits);
         for (int i=0;i<9;i++) {
@@ -106,6 +102,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
             digits[i].setText(Integer.toString(i+1));
             numpad.addView(digits[i]);
         }
+        kenKenGrid.mMathDoku = this;
         kenKenGrid.digits = digits;
         kenKenGrid.controls = controls;
         kenKenGrid.setMarkInvalidMaybes(preferences.getString("invalidmaybes", "I").equals("M"));
@@ -118,27 +115,6 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
             digits[2], digits[3], digits[4], digits[5], digits[6], digits[7], digits[8],
             clearDigit, allDigit
         };
-
-        solvedAnimation = AnimationUtils.loadAnimation(this, R.anim.solvedanim);
-        solvedAnimation.setAnimationListener(new AnimationListener() {
-            public void onAnimationEnd(Animation animation) {
-              solvedText.setVisibility(View.GONE);
-            }
-            public void onAnimationRepeat(Animation animation) {}
-            public void onAnimationStart(Animation animation) {}
-          });
-
-        kenKenGrid.setSolvedHandler(kenKenGrid.new OnSolvedListener() {
-                @Override
-                public void puzzleSolved() {
-                    // TODO Auto-generated method stub
-                    if (kenKenGrid.isActive()) {
-                        Toast.makeText(kenKenGrid.mContext, R.string.main_ui_solved_messsage, Toast.LENGTH_SHORT).show();
-                    }
-                    controls.setVisibility(View.GONE);
-                    pressMenu.setVisibility(View.VISIBLE);
-                }
-        });
 
         for (int i = 0; i<digits.length; i++) {
             digits[i].setOnTouchListener(this);
@@ -153,6 +129,14 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
             setButtonVisibility(kenKenGrid.mGridSize);
             kenKenGrid.setActive(true);
         }
+    }
+
+    public void Solved() {
+        if (kenKenGrid.isActive()) {
+            Toast.makeText(kenKenGrid.mContext, R.string.main_ui_solved_messsage, Toast.LENGTH_SHORT).show();
+        }
+        controls.setVisibility(View.GONE);
+        solvedText.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -307,7 +291,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
                 break;
             case SHOW_SOLUTION:
                 kenKenGrid.Solve();
-                pressMenu.setVisibility(View.VISIBLE);
+                solvedText.setVisibility(View.VISIBLE);
                 break;
             case POPULATE_MAYBES:
                 for (GridCell cell : kenKenGrid.mCells) {
@@ -505,23 +489,9 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
                 digits[i].setVisibility(View.GONE);
 
         solvedText.setVisibility(View.GONE);
-        pressMenu.setVisibility(View.GONE);
         if (!preferences.getBoolean("hideselector", false)) {
             controls.setVisibility(View.VISIBLE);
         }
-    }
-
-    private void animText(int textIdentifier, int color) {
-        solvedText.setText(textIdentifier);
-        solvedText.setTextColor(color);
-        solvedText.setVisibility(View.VISIBLE);
-        final float SCALE_FROM = (float) 0;
-        final float SCALE_TO = (float) 1.0;
-        ScaleAnimation anim = new ScaleAnimation(SCALE_FROM, SCALE_TO, SCALE_FROM, SCALE_TO,
-                kenKenGrid.mCurrentWidth/2, kenKenGrid.mCurrentWidth/2);
-        anim.setDuration(1000);
-        //animText.setAnimation(anim);
-        this.solvedText.startAnimation(this.solvedAnimation);
     }
 
     private void openHelpDialog() {
