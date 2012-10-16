@@ -38,7 +38,7 @@ public class SavedGameList extends ListActivity {
         })
         .setPositiveButton(R.string.save_game_screen_delete_game_positive_button_label, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                    new File(filename).delete();
+                    new File(getFilesDir() + File.separator + filename).delete();
                     mAdapter.refreshFiles();
                     mAdapter.notifyDataSetChanged();
                 }
