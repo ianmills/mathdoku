@@ -24,13 +24,11 @@ public class SavedGameListAdapter extends BaseAdapter {
     public ArrayList<String> mGameFiles;
     private LayoutInflater inflater;
     private SavedGameList mContext;
-//    private Typeface mFace;
 
     public SavedGameListAdapter(SavedGameList context) {
         inflater = LayoutInflater.from(context);
         mContext = context;
         mGameFiles = new ArrayList<String>();
-//        mFace=Typeface.createFromAsset(context.getAssets(), "fonts/font.ttf");
         refreshFiles();
 
     }
@@ -121,7 +119,6 @@ public class SavedGameListAdapter extends BaseAdapter {
         Log.e(MathDoku.TAG, "getting miniview for " + saveFile);
 
         grid.mContext = mContext;
-//        grid.mFace = mFace;
         grid.setActive(false);
         grid.mDupedigits = PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("dupedigits", true);
         grid.mBadMaths = PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("badmaths", true);
