@@ -739,7 +739,7 @@ public class GridView extends View implements OnTouchListener  {
     }
 
     public synchronized boolean Save(String filename) {// Avoid saving game at the same time as creating puzzle
-        String mFilename = mContext.getFilesDir() + filename;
+        String mFilename = mContext.getFilesDir() + File.separator + filename;
         try {
             writer = new BufferedWriter(new FileWriter(mFilename));
             long now = System.currentTimeMillis();
@@ -847,12 +847,14 @@ public class GridView extends View implements OnTouchListener  {
 
     public boolean Restore(String filename) {
         String line = null;
-        String mFilename = mContext.getFilesDir() + filename;
+        String mFilename = mContext.getFilesDir() + File.separator + filename;
+        Log.e(MathDoku.TAG, "restoring file: " + mFilename);
         BufferedReader br = null;
         InputStream ins = null;
         String[] cellParts;
         String[] cageParts;
         File file = new File(mFilename);
+        boolean isAutoSave =  filename.equals(MathDoku.savegamename) ? true : false;
         try {
             ins = new FileInputStream(file);
             br = new BufferedReader(new InputStreamReader(ins), 8192);
@@ -907,12 +909,15 @@ public class GridView extends View implements OnTouchListener  {
             try {
                 ins.close();
                 br.close();
-                file.delete();
+                if (isAutoSave) {
+                    file.delete();
+                }
             } catch (Exception e) {
                 // Nothing.
                 return false;
             }
         }
+        invalidate();
         return true;
     }
 }

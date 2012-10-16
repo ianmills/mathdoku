@@ -17,150 +17,156 @@ import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.util.Log;
 
 public class SavedGameListAdapter extends BaseAdapter {
-	
-	public ArrayList<String> mGameFiles;
-	private LayoutInflater inflater;
-	private SavedGameList mContext;
-	private Typeface mFace;
 
-	public SavedGameListAdapter(SavedGameList context) {
-		this.inflater = LayoutInflater.from(context);
-		this.mContext = context;
-		this.mGameFiles = new ArrayList<String>();
-		this.mFace=Typeface.createFromAsset(context.getAssets(), "fonts/font.ttf");
-		this.refreshFiles();
+    public ArrayList<String> mGameFiles;
+    private LayoutInflater inflater;
+    private SavedGameList mContext;
+//    private Typeface mFace;
 
-	}
-	
-	public class SortSavedGames implements Comparator<String> {
-		long save1 = 0;
-		long save2 = 0;
-		public int compare(String object1, String object2) {
-			try {
-				save1 = GridView.ReadDate(object1);
-				save2 = GridView.ReadDate(object2);
-			}
-			catch (Exception e) {
-				//
-			}
-			return (int) ((save2 - save1)/1000);
-		}
-		
-	}
-	
-	public void refreshFiles() {
-		this.mGameFiles.clear();
-		File dir = mContext.getFilesDir();
-		String[] allFiles = dir.list();
-		for (String entryName : allFiles)
-			if (entryName.startsWith("savedgame_"))
-				this.mGameFiles.add(entryName);
-		
-		Collections.sort((List<String>)this.mGameFiles, new SortSavedGames());
-		
-	}
+    public SavedGameListAdapter(SavedGameList context) {
+        inflater = LayoutInflater.from(context);
+        mContext = context;
+        mGameFiles = new ArrayList<String>();
+//        mFace=Typeface.createFromAsset(context.getAssets(), "fonts/font.ttf");
+        refreshFiles();
 
-	public int getCount() {
-		return this.mGameFiles.size() + 1;
-	}
+    }
 
-	public Object getItem(int arg0) {
-		if (arg0 == 0)
-			return "";
-		return this.mGameFiles.get(arg0-1);
-	}
+    public class SortSavedGames implements Comparator<String> {
+        long save1 = 0;
+        long save2 = 0;
+        public int compare(String object1, String object2) {
+            try {
+                save1 = GridView.ReadDate(mContext.getFilesDir() + File.separator + object1);
+                save2 = GridView.ReadDate(mContext.getFilesDir() + File.separator + object2);
+            }
+            catch (Exception e) {
+                //
+            }
+            return (int) ((save2 - save1)/1000);
+        }
 
-	public long getItemId(int position) {
-		return position;
-	}
+    }
 
-	public View getView(int position, View convertView, ViewGroup parent) {
-		if (position == 0) {
-			convertView = inflater.inflate(R.layout.savedgamesaveitem, null);
-//			if (PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("alternatetheme", true)) {
-//				convertView.findViewById(R.id.wordRow).setBackgroundDrawable(null);
-//				convertView.findViewById(R.id.wordRow).setBackgroundColor(0xFFA0A0CC);
-//			} else {
-				//convertView.findViewById(R.id.wordRow).setBackgroundResource(R.drawable.background1);
-//			}
-			
-			final Button saveCurrent = (Button)convertView.findViewById(R.id.saveCurrent);
-			saveCurrent.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					saveCurrent.setEnabled(false);
-					mContext.saveCurrent();
-				}
-			});
-			if (mContext.mCurrentSaved)
-				saveCurrent.setEnabled(false);
-			return convertView;
-		}
-		
-		convertView = inflater.inflate(R.layout.savedgameitem, null);
-		
-		
-		GridView grid = (GridView)convertView.findViewById(R.id.savedGridView);
-		if (PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("alternatetheme", true)) {
-			grid.setTheme(GridView.THEME_NEWSPAPER);
-//			convertView.findViewById(R.id.wordRow).setBackgroundDrawable(null);
-//			convertView.findViewById(R.id.wordRow).setBackgroundColor(0xFFA0A0CC);
-			convertView.findViewById(R.id.wordRow).setBackgroundResource(R.drawable.background1);
-		} else {
-			grid.setTheme(GridView.THEME_CARVED);
-			convertView.findViewById(R.id.wordRow).setBackgroundResource(R.drawable.background1);
-		}
-		TextView label = (TextView)convertView.findViewById(R.id.savedGridText);
+    public void refreshFiles() {
+        mGameFiles.clear();
+        File dir = mContext.getFilesDir();
+        String[] allFiles = dir.list();
+        for (String entryName : allFiles) {
+            if (entryName.startsWith("savedgame_")) {
+                mGameFiles.add(entryName);
+                Log.e(MathDoku.TAG, "adding saved game: " + entryName);
+            }
+        }
 
-		final String saveFile = this.mGameFiles.get(position-1);
-		
-		grid.mContext = this.mContext;
-		grid.mFace = this.mFace;
-		grid.setActive(false);
-	    grid.mDupedigits = PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("dupedigits", true);
-	    grid.mBadMaths = PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("badmaths", true);
+        Collections.sort((List<String>)mGameFiles, new SortSavedGames());
 
-		try {
+    }
+
+    public int getCount() {
+        return mGameFiles.size() + 1;
+    }
+
+    public Object getItem(int arg0) {
+        if (arg0 == 0)
+            return "";
+        return mGameFiles.get(arg0-1);
+    }
+
+    public long getItemId(int position) {
+        return position;
+    }
+
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (position == 0) {
+            convertView = inflater.inflate(R.layout.savedgamesaveitem, null);
+//            if (PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("alternatetheme", true)) {
+//                convertView.findViewById(R.id.wordRow).setBackgroundDrawable(null);
+//                convertView.findViewById(R.id.wordRow).setBackgroundColor(0xFFA0A0CC);
+//            } else {
+                //convertView.findViewById(R.id.wordRow).setBackgroundResource(R.drawable.background1);
+//            }
+
+            final Button saveCurrent = (Button)convertView.findViewById(R.id.saveCurrent);
+            saveCurrent.setOnClickListener(new OnClickListener() {
+                public void onClick(View v) {
+                    saveCurrent.setEnabled(false);
+                    mContext.saveCurrent();
+                }
+            });
+            if (mContext.mCurrentSaved)
+                saveCurrent.setEnabled(false);
+            return convertView;
+        }
+
+        convertView = inflater.inflate(R.layout.savedgameitem, null);
+
+
+        GridView grid = (GridView)convertView.findViewById(R.id.savedGridView);
+        if (PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("alternatetheme", true)) {
+//            grid.setTheme(GridView.THEME_NEWSPAPER);
+//            convertView.findViewById(R.id.wordRow).setBackgroundDrawable(null);
+//            convertView.findViewById(R.id.wordRow).setBackgroundColor(0xFFA0A0CC);
+//            convertView.findViewById(R.id.wordRow).setBackgroundResource(R.drawable.background1);
+        } else {
+//            grid.setTheme(GridView.THEME_CARVED);
+//            convertView.findViewById(R.id.wordRow).setBackgroundResource(R.drawable.background1);
+        }
+        TextView label = (TextView)convertView.findViewById(R.id.savedGridText);
+
+        final String saveFile = mGameFiles.get(position-1);
+        Log.e(MathDoku.TAG, "getting miniview for " + saveFile);
+
+        grid.mContext = mContext;
+//        grid.mFace = mFace;
+        grid.setActive(false);
+        grid.mDupedigits = PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("dupedigits", true);
+        grid.mBadMaths = PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("badmaths", true);
+
+        try {
             grid.Restore(saveFile);
-		}
-		catch (Exception e) {
-			// Error, delete the file.
-			new File(saveFile).delete();
-			return convertView;
-		}
-		Calendar currentTime = Calendar.getInstance();
-		Calendar gameTime = Calendar.getInstance();
-		gameTime.setTimeInMillis(grid.mDate);
-		if (System.currentTimeMillis() - grid.mDate < 86400000 &&
-			gameTime.get(Calendar.DAY_OF_YEAR) != currentTime.get(Calendar.DAY_OF_YEAR))
-			label.setText(gameTime.get(Calendar.HOUR) + ":" + gameTime.get(Calendar.MINUTE) + 
-					((gameTime.get(Calendar.AM_PM) == Calendar.AM) ? " AM" : " PM") + " yesterday");
-		else if (System.currentTimeMillis() - grid.mDate < 86400000)
-			label.setText("" + DateFormat.getTimeInstance(DateFormat.SHORT).format(grid.mDate));
-		else
-			label.setText("" + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(grid.mDate));
+        } catch (Exception e) {
+            Log.e(MathDoku.TAG, "Got exception " + e);
+            e.printStackTrace();
+            // Error, delete the file.
+            new File(saveFile).delete();
+            return convertView;
+        }
+        Calendar currentTime = Calendar.getInstance();
+        Calendar gameTime = Calendar.getInstance();
+        gameTime.setTimeInMillis(grid.mDate);
+        if (System.currentTimeMillis() - grid.mDate < 86400000 &&
+            gameTime.get(Calendar.DAY_OF_YEAR) != currentTime.get(Calendar.DAY_OF_YEAR))
+            label.setText(gameTime.get(Calendar.HOUR) + ":" + gameTime.get(Calendar.MINUTE) +
+                    ((gameTime.get(Calendar.AM_PM) == Calendar.AM) ? " AM" : " PM") + " yesterday");
+        else if (System.currentTimeMillis() - grid.mDate < 86400000)
+            label.setText("" + DateFormat.getTimeInstance(DateFormat.SHORT).format(grid.mDate));
+        else
+            label.setText("" + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(grid.mDate));
 
-		grid.setBackgroundColor(0xFFFFFFFF);
-		
-		for (GridCell cell : grid.mCells)
-			cell.mSelected = false;
-		
-		Button loadButton = (Button)convertView.findViewById(R.id.gameLoad);
-		loadButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mContext.LoadGame(saveFile);
-			}
-		});
-		
-		Button deleteButton = (Button)convertView.findViewById(R.id.gameDelete);
-		deleteButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mContext.DeleteGame(saveFile);
-			}
-		});
-		
-		return convertView;
-	}
+        grid.setBackgroundColor(0xFFFFFFFF);
+
+        for (GridCell cell : grid.mCells)
+            cell.mSelected = false;
+
+        Button loadButton = (Button)convertView.findViewById(R.id.gameLoad);
+        loadButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                mContext.LoadGame(saveFile);
+            }
+        });
+
+        Button deleteButton = (Button)convertView.findViewById(R.id.gameDelete);
+        deleteButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                mContext.DeleteGame(saveFile);
+            }
+        });
+
+        return convertView;
+    }
 
 }

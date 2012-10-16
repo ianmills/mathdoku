@@ -48,7 +48,7 @@ import android.R.style;
 
 public class MathDoku extends Activity implements OnSharedPreferenceChangeListener {
     public static final String TAG = "MathDoku";
-    private static final String savegamename = "savedgame";
+    public static final String savegamename = "savedgame";
     private static final int USE_MAYBES = 101;
     private static final int REVEAL_CELL = 102;
     private static final int CLEAR_CAGE = 103;
@@ -193,7 +193,10 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         kenKenGrid.setFocusableInTouchMode(true);
 
         registerForContextMenu(kenKenGrid);
-        kenKenGrid.Restore(savegamename);
+        if (kenKenGrid.Restore(savegamename)) {
+            setButtonVisibility(kenKenGrid.mGridSize);
+            kenKenGrid.setActive(true);
+        }
     }
 
 
