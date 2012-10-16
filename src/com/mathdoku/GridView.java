@@ -434,9 +434,10 @@ public class GridView extends View implements OnTouchListener  {
 
     @Override
     protected synchronized void onDraw(Canvas canvas) {
-        Log.e(MathDoku.TAG, "onDraw");
-        if (mGridSize < 4) return;
-        if (mCages == null) return;
+        if (mGridSize < 4 || mCages == null ) {
+            mActive = false;
+            return;
+        }
 
         int width = getMeasuredWidth();
 
@@ -858,7 +859,6 @@ public class GridView extends View implements OnTouchListener  {
     public boolean Restore(String filename) {
         String line = null;
         String mFilename = mContext.getFilesDir() + File.separator + filename;
-        Log.e(MathDoku.TAG, "restoring file: " + mFilename);
         BufferedReader br = null;
         InputStream ins = null;
         String[] cellParts;

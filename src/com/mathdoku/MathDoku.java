@@ -95,6 +95,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         topLayout = (LinearLayout)findViewById(R.id.topLayout);
         kenKenGrid = (GridView)findViewById(R.id.gridView);
         solvedText = (TextView)findViewById(R.id.solvedText);
+        solvedText.setVisibility(View.GONE);
         controls = (LinearLayout)findViewById(R.id.controls);
         numpad = (GridLayout)findViewById(R.id.digits);
         for (int i=0;i<9;i++) {
@@ -173,7 +174,6 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
     public void onPause() {
         if (kenKenGrid.mGridSize > 3) {
             kenKenGrid.Save(savegamename);
-            kenKenGrid.setActive(false);
             kenKenGrid.onPause();
         }
         if (wakeLock.isHeld())
@@ -191,7 +191,6 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         }
         setSoundEffectsEnabled(preferences.getBoolean("soundeffects", true));
 
-        kenKenGrid.setActive(true);
         kenKenGrid.onResume(getActionBar());
         super.onResume();
     }
