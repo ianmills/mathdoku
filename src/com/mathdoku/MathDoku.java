@@ -220,13 +220,6 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
     public void onResume() {
         if (preferences.getBoolean("wakelock", true))
             wakeLock.acquire();
-        if (preferences.getBoolean("alternatetheme", true)) {
-            topLayout.setBackgroundDrawable(null);
-            kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
-        } else {
-            topLayout.setBackgroundResource(R.drawable.background);
-            kenKenGrid.setTheme(GridView.THEME_CARVED);
-        }
         kenKenGrid.mDupedigits = preferences.getBoolean("dupedigits", true);
         kenKenGrid.mBadMaths = preferences.getBoolean("badmaths", true);
         if (kenKenGrid.isActive() && !preferences.getBoolean("hideselector", false)) {
@@ -510,13 +503,6 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
     final Runnable newGameReady = new Runnable() {
         public void run() {
             dismissDialog(0);
-            if (preferences.getBoolean("alternatetheme", true)) {
-                topLayout.setBackgroundDrawable(null);
-                kenKenGrid.setTheme(GridView.THEME_NEWSPAPER);
-            } else {
-                topLayout.setBackgroundResource(R.drawable.background);
-                kenKenGrid.setTheme(GridView.THEME_CARVED);
-            }
             setButtonVisibility(kenKenGrid.mGridSize);
             kenKenGrid.invalidate();
         }

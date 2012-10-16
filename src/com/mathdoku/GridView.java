@@ -39,9 +39,6 @@ import android.widget.TextView;
 
 public class GridView extends View implements OnTouchListener  {
 
-    public static final int THEME_CARVED = 0;
-    public static final int THEME_NEWSPAPER = 1;
-
     private OnSolvedListener mSolvedListener;
     private OnGridTouchListener mTouchedListener;
     public Button digits[];
@@ -70,7 +67,6 @@ public class GridView extends View implements OnTouchListener  {
 
     // Date of current game (used for saved games)
     public long mDate;
-    public int mTheme;
     private Timer mTimer;
     private TimerTask mTimerTask;
     public int game_duration;
@@ -102,7 +98,6 @@ public class GridView extends View implements OnTouchListener  {
         mGridPaint = new Paint();
         mGridPaint.setColor(0x80000000);
         mGridPaint.setStrokeWidth(0);
-        //mGridPaint.setPathEffect(new DashPathEffect(new float[] {2, 2}, 0));
 
         mBorderPaint = new Paint();
         mBorderPaint.setColor(0xFF000000);
@@ -151,30 +146,6 @@ public class GridView extends View implements OnTouchListener  {
         }
     };
 
-    public void setTheme(int theme) {
-        if (theme == THEME_CARVED) {
-            mGridPaint.setAntiAlias(true);
-            mGridPaint.setPathEffect(new DiscretePathEffect(20, 1));
-            mGridPaint.setColor(0xbf906050);
-            mBorderPaint.setAntiAlias(true);
-            mBorderPaint.setPathEffect(new DiscretePathEffect(30, 1));
-            mBackgroundColor = 0x7ff0d090;
-        } else if (theme == THEME_NEWSPAPER) {
-            mGridPaint.setPathEffect(new DashPathEffect(new float[] {2, 2}, 0));
-            mBorderPaint.setAntiAlias(false);
-            mBorderPaint.setPathEffect(null);
-            mBackgroundColor = 0xffffffff;
-        }
-        if (getMeasuredHeight() < 150)
-            mBorderPaint.setStrokeWidth(1);
-        else
-            mBorderPaint.setStrokeWidth(3);
-
-        if (mCells != null)
-            for (GridCell cell : mCells)
-                cell.setTheme(theme);
-    }
-
     public boolean clearInvalidPossibles() {
         boolean isChanged = false;
         for (GridCell cell : mCells) {
@@ -221,7 +192,6 @@ public class GridView extends View implements OnTouchListener  {
         Log.d ("MathDoku", "Num Attempts = " + num_attempts);
         setActive(true);
         mSelectorShown = false;
-        setTheme(mTheme);
     }
 
   // Returns cage id of cell at row, column

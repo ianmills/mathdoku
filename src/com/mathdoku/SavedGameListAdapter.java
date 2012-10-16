@@ -81,12 +81,6 @@ public class SavedGameListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (position == 0) {
             convertView = inflater.inflate(R.layout.savedgamesaveitem, null);
-//            if (PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("alternatetheme", true)) {
-//                convertView.findViewById(R.id.wordRow).setBackgroundDrawable(null);
-//                convertView.findViewById(R.id.wordRow).setBackgroundColor(0xFFA0A0CC);
-//            } else {
-                //convertView.findViewById(R.id.wordRow).setBackgroundResource(R.drawable.background1);
-//            }
 
             final Button saveCurrent = (Button)convertView.findViewById(R.id.saveCurrent);
             saveCurrent.setOnClickListener(new OnClickListener() {
@@ -104,15 +98,6 @@ public class SavedGameListAdapter extends BaseAdapter {
 
 
         GridView grid = (GridView)convertView.findViewById(R.id.savedGridView);
-        if (PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("alternatetheme", true)) {
-//            grid.setTheme(GridView.THEME_NEWSPAPER);
-//            convertView.findViewById(R.id.wordRow).setBackgroundDrawable(null);
-//            convertView.findViewById(R.id.wordRow).setBackgroundColor(0xFFA0A0CC);
-//            convertView.findViewById(R.id.wordRow).setBackgroundResource(R.drawable.background1);
-        } else {
-//            grid.setTheme(GridView.THEME_CARVED);
-//            convertView.findViewById(R.id.wordRow).setBackgroundResource(R.drawable.background1);
-        }
         TextView label = (TextView)convertView.findViewById(R.id.savedGridText);
 
         final String saveFile = mGameFiles.get(position-1);

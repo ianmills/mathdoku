@@ -62,8 +62,6 @@ public class GridCell {
   private Paint mCheatedPaint;
   private Paint mSelectedPaint;
   
-  public int mTheme;
-  
   public GridCell(GridView gridView, int cell) {
     mGridView = gridView;
     int gridSize = mGridView.mGridSize;
@@ -129,25 +127,6 @@ public class GridCell {
     //mPossibles.add(5);
     
     setBorders(BORDER_NONE, BORDER_NONE, BORDER_NONE, BORDER_NONE);
-  }
-  
-  public void setTheme(int theme) {
-	  this.mTheme = theme;
-	  if (theme == GridView.THEME_CARVED) {
-	    this.mBorderPaint.setAntiAlias(true);
-		this.mBorderPaint.setPathEffect(new DiscretePathEffect(20, 1));
-	    this.mWrongBorderPaint.setAntiAlias(true);
-	    this.mWrongBorderPaint.setPathEffect(new DiscretePathEffect(20, 1));
-	    this.mValuePaint.setTypeface(this.mGridView.mFace);
-	    this.mCageTextPaint.setTypeface(this.mGridView.mFace);
-	  } else if (theme == GridView.THEME_NEWSPAPER) {
-	    this.mBorderPaint.setAntiAlias(false);
-		this.mBorderPaint.setPathEffect(null);
-	    this.mWrongBorderPaint.setAntiAlias(true);
-	    this.mWrongBorderPaint.setPathEffect(null);
-	    this.mValuePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
-	    this.mCageTextPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
-	  }
   }
   
   public String toString() {
@@ -313,11 +292,7 @@ public class GridCell {
 	    this.mValuePaint.setTextSize(textSize);
 	    float leftOffset = cellSize/2 - textSize/4;
 	    float topOffset;
-	    if (this.mTheme == GridView.THEME_NEWSPAPER) {
-	    	topOffset = cellSize/2 + textSize*2/5;
-	    } else {
-	    	topOffset = cellSize/2 + textSize/3;
-	    }
+        topOffset = cellSize/2 + textSize/3;
 	    canvas.drawText("" + this.mUserValue, this.mPosX + leftOffset, this.mPosY + topOffset, this.mValuePaint);
     }
     
