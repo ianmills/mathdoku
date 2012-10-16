@@ -319,7 +319,7 @@ public class GridCell {
                     if (mGridView.markInvalidMaybes && (mGridView.getNumValueInRow(this, possible) >= 1 ||
                                 mGridView.getNumValueInCol(this, possible) >= 1)) {
                         mPossiblesPaint.setColor(0x50FF0000);
-                                }
+                    }
                     float xPos = mPosX + xOffset + ((possible-1)%3)*xScale;
                     float yPos = mPosY + yOffset + ((int)(possible-1)/3)*yScale;
                     canvas.drawText(Integer.toString(possible), xPos, yPos, mPossiblesPaint);

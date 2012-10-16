@@ -39,14 +39,11 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
 import android.widget.LinearLayout;
-import android.preference.PreferenceManager;
-import android.content.SharedPreferences;
 
 public class GridView extends View implements OnTouchListener  {
 
     public Button digits[];
     public LinearLayout controls;
-    public SharedPreferences preferences;
     private Animation outAnimation;
     private ActionBar mActionBar;
 
@@ -73,6 +70,7 @@ public class GridView extends View implements OnTouchListener  {
     public Typeface mFace;
     public boolean mDupedigits;
     public boolean mBadMaths;
+    public boolean hideselector = false;
 
     // Date of current game (used for saved games)
     public long mDate;
@@ -519,14 +517,14 @@ public class GridView extends View implements OnTouchListener  {
     public void gridTouched(GridCell cell) {
         if (controls.getVisibility() == View.VISIBLE) {
             // digitSelector.setVisibility(View.GONE);
-            if (preferences.getBoolean("hideselector", false)) {
+            if (hideselector) {
                 controls.startAnimation(outAnimation);
                 //cell.mSelected = false;
                 mSelectorShown = false;
             }
             requestFocus();
         } else {
-            if (preferences.getBoolean("hideselector", false)) {
+            if (hideselector) {
                 controls.setVisibility(View.VISIBLE);
                 Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.selectorzoomin);
                 controls.startAnimation(animation);
