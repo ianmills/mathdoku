@@ -46,7 +46,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.R.style;
 
-public class MathDoku extends Activity implements OnSharedPreferenceChangeListener {
+public class MathDoku extends Activity implements OnSharedPreferenceChangeListener,
+                                                  OnTouchListener
+{
     public static final String TAG = "MathDoku";
     public static final String savegamename = "savedgame";
     private static final int USE_MAYBES = 101;
@@ -166,27 +168,9 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
                 }
         });
 
-        for (int i = 0; i<digits.length; i++)
-            digits[i].setOnTouchListener(new OnTouchListener() {
-                public boolean onTouch(View v, MotionEvent event) {
-                    // Convert text of button (number) to Integer
-                    if (event.getActionMasked() == MotionEvent.ACTION_UP) {
-                        int d = Integer.parseInt(((Button)v).getText().toString());
-                        digitSelected(d);
-                    }
-                    return true;
-                }
-            });
-        this.clearDigit.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                digitSelected(0);
-            }
-        });
-        this.allDigit.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                digitSelected(-1);
-            }
-        });
+        for (int i = 0; i<digits.length; i++) {
+            digits[i].setOnTouchListener(this);
+        }
 
         newVersionCheck();
         kenKenGrid.setFocusable(true);
@@ -199,6 +183,23 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         }
     }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        // Convert text of button (number) to Integer
+        if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+            int d = Integer.parseInt(((Button)v).getText().toString());
+            digitSelected(d);
+        }
+        return true;
+    }
+
+    public void onClear(View view) {
+        digitSelected(0);
+    }
+
+    public void onAll(View view) {
+        digitSelected(-1);
+    }
 
     @Override
     public void onSharedPreferenceChanged (SharedPreferences sharedPreferences, String key) {

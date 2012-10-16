@@ -168,6 +168,7 @@
 			android:textStyle="bold"
 		    android:layout_gravity="right"
 			android:text="@string/main_ui_all"
+            android:onClick="onAll"
 		/>
 		<Button android:id="@+id/clearButton"
 			android:layout_width="70dp"
@@ -176,6 +177,7 @@
 			android:textStyle="bold"
 		    android:layout_gravity="right"
 			android:text="@string/main_ui_clear"
+            android:onClick="onClear"
 		/>
 	</LinearLayout>
 </LinearLayout>
