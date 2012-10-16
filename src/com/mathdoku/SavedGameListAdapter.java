@@ -39,8 +39,8 @@ public class SavedGameListAdapter extends BaseAdapter {
 		long save2 = 0;
 		public int compare(String object1, String object2) {
 			try {
-				save1 = new SaveGame(mContext, object1).ReadDate();
-				save2 = new SaveGame(mContext, object2).ReadDate();
+				save1 = GridView.ReadDate(object1);
+				save2 = GridView.ReadDate(object2);
 			}
 			catch (Exception e) {
 				//
@@ -121,9 +121,8 @@ public class SavedGameListAdapter extends BaseAdapter {
 	    grid.mDupedigits = PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("dupedigits", true);
 	    grid.mBadMaths = PreferenceManager.getDefaultSharedPreferences(convertView.getContext()).getBoolean("badmaths", true);
 
-		SaveGame saver = new SaveGame(mContext, saveFile);
 		try {
-			saver.Restore(grid);
+            grid.Restore(saveFile);
 		}
 		catch (Exception e) {
 			// Error, delete the file.

@@ -1,5 +1,14 @@
 package com.mathdoku;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.TimerTask;
@@ -65,6 +74,9 @@ public class GridView extends View implements OnTouchListener  {
     private Timer mTimer;
     private TimerTask mTimerTask;
     public int game_duration;
+
+    private String mFilename;
+    private BufferedWriter writer = null;
 
     public GridView(Context context) {
         super(context);
@@ -698,5 +710,209 @@ public class GridView extends View implements OnTouchListener  {
     }
     public abstract class OnGridTouchListener {
         public abstract void gridTouched(GridCell cell);
+    }
+
+    private void writeCell(GridCell cell) throws java.io.IOException {
+        writer.write("CELL:");
+        writer.write(cell.mCellNumber + ":");
+        writer.write(cell.mRow + ":");
+        writer.write(cell.mColumn + ":");
+        writer.write(cell.mCageText + ":");
+        writer.write(cell.mValue + ":");
+        writer.write(cell.getUserValue() + ":");
+        for (int possible : cell.mPossibles) {
+            writer.write(possible + ",");
+        }
+        writer.write("\n");
+    }
+
+    private void writeCage(GridCage cage) throws java.io.IOException {
+        writer.write("CAGE:");
+        writer.write(cage.mId + ":");
+        writer.write(cage.mAction + ":");
+        writer.write(cage.mResult + ":");
+        writer.write(cage.mType + ":");
+        for (GridCell cell : cage.mCells)
+            writer.write(cell.mCellNumber + ",");
+        writer.write(":" + cage.isOperatorHidden());
+        writer.write("\n");
+    }
+
+    public synchronized boolean Save(String filename) {// Avoid saving game at the same time as creating puzzle
+        String mFilename = mContext.getFilesDir() + filename;
+        try {
+            writer = new BufferedWriter(new FileWriter(mFilename));
+            long now = System.currentTimeMillis();
+            writer.write(now + "\n");
+            writer.write(mGridSize + "\n");
+            writer.write(isActive() + "\n");
+            writer.write("Duration:");
+            writer.write(Integer.toString(game_duration) + "\n");
+            for (GridCell cell : mCells) {
+                writeCell(cell);
+            }
+            if (mSelectedCell != null) {
+                writer.write("SELECTED:" + mSelectedCell.mCellNumber + "\n");
+            }
+            ArrayList<GridCell> invalidchoices = invalidsHighlighted();
+            if (invalidchoices.size() > 0) {
+                writer.write("INVALID:");
+                for (GridCell cell : invalidchoices) {
+                    writer.write(cell.mCellNumber + ",");
+                }
+                writer.write("\n");
+            }
+            for (GridCage cage : mCages) {
+                writeCage(cage);
+            }
+        } catch (IOException e) {
+            Log.d("MathDoku", "Error saving game: "+e.getMessage());
+            return false;
+        } finally {
+            try {
+                if (writer != null)
+                    writer.close();
+                writer = null;
+            } catch (IOException e) {
+                //pass
+                return false;
+            }
+        }
+        Log.d("MathDoku", "Saved game.");
+        return true;
+    }
+
+
+    public static long ReadDate(String filename) {
+        String mFilename = filename;
+        BufferedReader br = null;
+        InputStream ins = null;
+        try {
+            ins = new FileInputStream(new File(mFilename));
+            br = new BufferedReader(new InputStreamReader(ins), 8192);
+            return Long.parseLong(br.readLine());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                ins.close();
+                br.close();
+            } catch (Exception e) {
+                // Nothing.
+                return 0;
+            }
+        }
+        return 0;
+    }
+
+    GridCell readCell(String[] cellParts) {
+        int cellNum = Integer.parseInt(cellParts[1]);
+        GridCell cell = new GridCell(this, cellNum);
+        cell.mRow = Integer.parseInt(cellParts[2]);
+        cell.mColumn = Integer.parseInt(cellParts[3]);
+        cell.mCageText = cellParts[4];
+        cell.mValue = Integer.parseInt(cellParts[5]);
+        cell.setUserValue(Integer.parseInt(cellParts[6]));
+        if (cellParts.length == 8) {
+            for (String possible : cellParts[7].split(",")) {
+                cell.mPossibles.add(Integer.parseInt(possible));
+            }
+        }
+        return cell;
+    }
+
+    GridCage readCage(String[] cageParts) {
+        GridCage cage;
+        if (cageParts.length >= 7) {
+            cage = new GridCage(this,
+                    Integer.parseInt(cageParts[4]),
+                    Boolean.parseBoolean(cageParts[6]));
+        } else {
+            cage = new GridCage(this,
+                    Integer.parseInt(cageParts[4]),
+                    false);
+        }
+        cage.mId = Integer.parseInt(cageParts[1]);
+        cage.mAction = Integer.parseInt(cageParts[2]);
+        cage.mResult = Integer.parseInt(cageParts[3]);
+        for (String cellId : cageParts[5].split(",")) {
+            int cellNum = Integer.parseInt(cellId);
+            GridCell c = mCells.get(cellNum);
+            c.mCageId = cage.mId;
+            cage.mCells.add(c);
+        }
+        return cage;
+    }
+
+
+    public boolean Restore(String filename) {
+        String line = null;
+        String mFilename = mContext.getFilesDir() + filename;
+        BufferedReader br = null;
+        InputStream ins = null;
+        String[] cellParts;
+        String[] cageParts;
+        File file = new File(mFilename);
+        try {
+            ins = new FileInputStream(file);
+            br = new BufferedReader(new InputStreamReader(ins), 8192);
+            mDate = Long.parseLong(br.readLine());
+            mGridSize = Integer.parseInt(br.readLine());
+            if (br.readLine().equals("true")) {
+                setActive(true);
+            } else {
+                setActive(false);
+            }
+            mCells = new ArrayList<GridCell>();
+            mCages = new ArrayList<GridCage>();
+            mSelectedCell = null;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("Duration")) {
+                    String parts[] = line.split(":");
+                    game_duration = Integer.parseInt(parts[1]);
+                    continue;
+                }
+                if (line.startsWith("CELL:")) {
+                    cellParts = line.split(":");
+                    GridCell cell = readCell(cellParts);
+                    mCells.add(cell);
+                }
+                if (line.startsWith("SELECTED:")) {
+                    int selected = Integer.parseInt(line.split(":")[1]);
+                    mSelectedCell = mCells.get(selected);
+                    mSelectedCell.mSelected = true;
+                }
+                if (line.startsWith("INVALID:")) {
+                    String invalidlist = line.split(":")[1];
+                    for (String cellId : invalidlist.split(",")) {
+                        int cellNum = Integer.parseInt(cellId);
+                        GridCell c = mCells.get(cellNum);
+                        c.setInvalidHighlight(true);
+                    }
+                }
+                if (line.startsWith("CAGE:")) {
+                    cageParts = line.split(":");
+                    GridCage cage = readCage(cageParts);
+                    mCages.add(cage);
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            Log.d("Mathdoku", "FNF Error restoring game: " + e.getMessage());
+            return false;
+        } catch (IOException e) {
+            Log.d("Mathdoku", "IO Error restoring game: " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                ins.close();
+                br.close();
+                file.delete();
+            } catch (Exception e) {
+                // Nothing.
+                return false;
+            }
+        }
+        return true;
     }
 }

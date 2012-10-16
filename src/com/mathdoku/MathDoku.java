@@ -48,6 +48,7 @@ import android.R.style;
 
 public class MathDoku extends Activity implements OnSharedPreferenceChangeListener {
     public static final String TAG = "MathDoku";
+    private static final String savegamename = "savedgame";
     private static final int USE_MAYBES = 101;
     private static final int REVEAL_CELL = 102;
     private static final int CLEAR_CAGE = 103;
@@ -192,11 +193,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         kenKenGrid.setFocusableInTouchMode(true);
 
         registerForContextMenu(kenKenGrid);
-        SaveGame saver = new SaveGame(this);
-        if (saver.Restore(kenKenGrid)) {
-            setButtonVisibility(kenKenGrid.mGridSize);
-            kenKenGrid.setActive(true);
-        }
+        kenKenGrid.Restore(savegamename);
     }
 
 
@@ -208,8 +205,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
 
     public void onPause() {
         if (kenKenGrid.mGridSize > 3) {
-            SaveGame saver = new SaveGame(this);
-            saver.Save(kenKenGrid);
+            kenKenGrid.Save(savegamename);
             kenKenGrid.setActive(false);
             kenKenGrid.onPause();
         }
@@ -261,8 +257,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         Bundle extras = data.getExtras();
         String filename = extras.getString("filename");
         Log.d("Mathdoku", "Loading game: " + filename);
-        SaveGame saver = new SaveGame(this, filename);
-        if (saver.Restore(kenKenGrid)) {
+        if (kenKenGrid.Restore(filename)) {
             setButtonVisibility(kenKenGrid.mGridSize);
             kenKenGrid.setActive(true);
         }
@@ -636,7 +631,6 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         Editor prefeditor = preferences.edit();
         int current_version = getVersionNumber();
         if (pref_version == -1 || pref_version != current_version) {
-          //new File(SaveGame.saveFilename).delete();
           prefeditor.putInt("currentversion", current_version);
           prefeditor.commit();
           if (pref_version == -1)
