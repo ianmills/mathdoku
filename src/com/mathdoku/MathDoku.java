@@ -226,15 +226,6 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
             controls.setVisibility(View.VISIBLE);
         }
         setSoundEffectsEnabled(preferences.getBoolean("soundeffects", true));
-        if (kenKenGrid.mSelectedCell != null) {
-            for (int i=1;i<=9;i++) {
-                if (kenKenGrid.mSelectedCell.mPossibles.contains(i)) {
-                    digits[i-1].setPressed(true);
-                } else {
-                    digits[i-1].setPressed(false);
-                }
-            }
-        }
 
         kenKenGrid.setActive(true);
         kenKenGrid.onResume();
@@ -475,19 +466,12 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
             kenKenGrid.mSelectedCell.togglePossible(value);
             if (kenKenGrid.mSelectedCell.mPossibles.size() == 1) {
                 kenKenGrid.mSelectedCell.setUserValue(kenKenGrid.mSelectedCell.mPossibles.get(0));
-            }
-            invalidMaybePref = preferences.getString("invalidmaybes", "I");
-            if (invalidMaybePref != null && invalidMaybePref.equals("C")) {
-                while (kenKenGrid.clearInvalidPossibles() == true);
+                invalidMaybePref = preferences.getString("invalidmaybes", "I");
+                if (invalidMaybePref != null && invalidMaybePref.equals("C")) {
+                    while (kenKenGrid.clearInvalidPossibles() == true);
+                }
             }
 
-        }
-        for (int i=1;i<=9;i++) {
-            if (kenKenGrid.mSelectedCell.mPossibles.contains(i)) {
-                digits[i-1].setPressed(true);
-            } else {
-                digits[i-1].setPressed(false);
-            }
         }
 
         if (preferences.getBoolean("hideselector", false))

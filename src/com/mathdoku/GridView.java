@@ -398,6 +398,19 @@ public class GridView extends View implements OnTouchListener  {
             return specSize;
     }
 
+    private void setPressedStates() {
+        for (int i=0;i<mGridSize;i++) {
+            digits[i].setPressed(false);
+        }
+        if (mSelectedCell.isUserValueSet()) {
+            digits[mSelectedCell.getUserValue()-1].setPressed(true);
+        } else {
+            for (Integer i : mSelectedCell.mPossibles) {
+                digits[i-1].setPressed(true);
+            }
+        }
+    }
+
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         if (mGridSize < 4) return;
@@ -420,6 +433,9 @@ public class GridView extends View implements OnTouchListener  {
             float pos = ((float)mCurrentWidth / (float)mGridSize) * i;
             canvas.drawLine(0, pos, mCurrentWidth, pos, mGridPaint);
             canvas.drawLine(pos, 0, pos, mCurrentWidth, mGridPaint);
+        }
+        if (mSelectedCell != null) {
+            setPressedStates();
         }
 
         // Draw cells
@@ -494,13 +510,6 @@ public class GridView extends View implements OnTouchListener  {
         if (mSelectedCell != cell)
             playSoundEffect(SoundEffectConstants.CLICK);
         mSelectedCell = cell;
-        for (int i=1;i<=9;i++) {
-            if (mSelectedCell.mPossibles.contains(i)) {
-                digits[i-1].setPressed(true);
-            } else {
-                digits[i-1].setPressed(false);
-            }
-        }
 
         float[] cellPos = CellToCoord(cell.mCellNumber);
         mTrackPosX = cellPos[0];
