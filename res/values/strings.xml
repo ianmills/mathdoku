@@ -106,7 +106,7 @@
 	<!-- The title of the bugs and features part of the changelog screen. -->
 	<string name="changelog_bugs_features_title">Bugs and features</string>
 	<!-- The text of the bugs and features part of the changelog screen. -->
-	<string name="changelog_bugs_features">Please report any issues or feature requests on the project page:\n\nhttp://mathdoku.googlecode.com/</string>
+    <string name="changelog_bugs_features">Please report any issues or feature requests on the project page:\n\nhttp://github.com/ianmills/mathdoku</string>
 	<!-- The first line in the help screen. -->
 	<string name="help_leadin">Thanks for installing MathDoku for Android.</string>
 	<!-- The version title in the help screen. -->

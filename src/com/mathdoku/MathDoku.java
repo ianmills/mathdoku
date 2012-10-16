@@ -103,6 +103,8 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         solvedText.setVisibility(View.GONE);
         controls = (LinearLayout)findViewById(R.id.controls);
         numpad = (GridLayout)findViewById(R.id.digits);
+        clearDigit = (Button)findViewById(R.id.clearButton);
+        allDigit = (Button)findViewById(R.id.allButton);
         for (int i=0;i<9;i++) {
             digits[i] = new Button(this);
             digits[i].setText(Integer.toString(i+1));
@@ -120,8 +122,6 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         kenKenGrid.hideselector = hideselector;
         kenKenGrid.mDupedigits = preferences.getBoolean("dupedigits", true);
         kenKenGrid.mBadMaths = preferences.getBoolean("badmaths", true);
-        clearDigit = (Button)findViewById(R.id.clearButton);
-        allDigit = (Button)findViewById(R.id.allButton);
 
         sound_effect_views = new View[] { kenKenGrid, digits[0], digits[1],
             digits[2], digits[3], digits[4], digits[5], digits[6], digits[7], digits[8],
@@ -189,9 +189,6 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
             soundEffectsEnabled = preferences.getBoolean("soundeffects", true);
             setSoundEffectsEnabled(soundEffectsEnabled);
         }
-
-
-
         kenKenGrid.invalidate();
     }
 
