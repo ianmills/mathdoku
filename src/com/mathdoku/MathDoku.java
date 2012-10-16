@@ -47,15 +47,15 @@ import android.widget.Toast;
 import android.R.style;
 
 public class MathDoku extends Activity implements OnSharedPreferenceChangeListener {
-    private final String TAG = "MathDoku";
-    private final int USE_MAYBES = 101;
-    private final int REVEAL_CELL = 102;
-    private final int CLEAR_CAGE = 103;
-    private final int CLEAR_GRID = 104;
-    private final int SHOW_SOLUTION = 105;
-    private final int POPULATE_MAYBES = 106;
+    public static final String TAG = "MathDoku";
+    private static final int USE_MAYBES = 101;
+    private static final int REVEAL_CELL = 102;
+    private static final int CLEAR_CAGE = 103;
+    private static final int CLEAR_GRID = 104;
+    private static final int SHOW_SOLUTION = 105;
+    private static final int POPULATE_MAYBES = 106;
+    private static final int LOAD_GAME = 7;
 
-    private final int LOAD_GAME = 7;
     private GridView kenKenGrid;
     private TextView solvedText;
     private TextView pressMenu;
@@ -244,6 +244,8 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
             }
         }
 
+        kenKenGrid.setActive(true);
+        kenKenGrid.onResume();
         super.onResume();
     }
 

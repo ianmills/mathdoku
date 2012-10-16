@@ -30,8 +30,8 @@ import android.widget.TextView;
 
 public class GridView extends View implements OnTouchListener  {
 
-	public static final int THEME_CARVED = 0;
-	public static final int THEME_NEWSPAPER = 1;
+    public static final int THEME_CARVED = 0;
+    public static final int THEME_NEWSPAPER = 1;
 
     private OnSolvedListener mSolvedListener;
     private OnGridTouchListener mTouchedListener;
@@ -59,9 +59,9 @@ public class GridView extends View implements OnTouchListener  {
     public boolean mDupedigits;
     public boolean mBadMaths;
 
-	// Date of current game (used for saved games)
-	public long mDate;
-	public int mTheme;
+    // Date of current game (used for saved games)
+    public long mDate;
+    public int mTheme;
     private Timer mTimer;
     private TimerTask mTimerTask;
     public int game_duration;
@@ -80,15 +80,12 @@ public class GridView extends View implements OnTouchListener  {
         initGridView();
     }
 
-
     private void initGridView() {
         mSolvedListener = null;
         mDupedigits = true;
         mBadMaths = true;
         game_duration = 0;
-        mTimerTask = new MathDokuTimerTask();
         mTimer = new Timer();
-        mTimer.scheduleAtFixedRate(mTimerTask, 1000, 1000);
 
         mGridPaint = new Paint();
         mGridPaint.setColor(0x80000000);
@@ -117,6 +114,12 @@ public class GridView extends View implements OnTouchListener  {
     public void onPause() {
         mTimerTask.cancel();
         mTimer.purge();
+        mTimerTask = null;
+    }
+
+    public void onResume() {
+        mTimerTask = new MathDokuTimerTask();
+        mTimer.scheduleAtFixedRate(mTimerTask, 1000, 1000);
     }
 
     public class MathDokuTimerTask extends TimerTask {
@@ -169,7 +172,7 @@ public class GridView extends View implements OnTouchListener  {
                 }
                 int possible = i;
                 if (getNumValueInRow(cell, possible) >= 1 ||
-					getNumValueInCol(cell, possible) >= 1) {
+                        getNumValueInCol(cell, possible) >= 1) {
                     cell.togglePossible(possible);
                     if (cell.mPossibles.size() == 1) {
                         cell.setUserValue(cell.mPossibles.get(0));
