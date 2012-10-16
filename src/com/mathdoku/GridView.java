@@ -382,8 +382,8 @@ public class GridView extends View implements OnTouchListener  {
 
     /* Determine if the given value is in the given row */
     public boolean valueInRow(int row, int value) {
-        for (GridCell cell : mCells)
-            if (cell.mRow == row && cell.mValue == value)
+        for (int column=0; column< mGridSize; column++)
+            if (mCells.get(column+row*mGridSize).mValue == value)
                 return true;
         return false;
     }
