@@ -124,8 +124,8 @@ public class GridCage {
     public int mType;
     // Id of the cage
     public int mId;
-    // Enclosing context
-    public GridView mContext;
+    // Enclosing Gridview 
+    public GridView mGridView;
     // User math is correct
     public boolean mUserMathCorrect;
     // Cage (or a cell within) is selected
@@ -135,8 +135,8 @@ public class GridCage {
     // Cached list of numbers which satisfy the cage's arithmetic
     private ArrayList<int[]> mPossibles;
 
-    public GridCage (GridView context, int type, boolean hiddenoperator) {
-        mContext = context;
+    public GridCage (GridView gridview, int type, boolean hiddenoperator) {
+        mGridView = gridview;
         mType = type;
         mOperatorHidden = hiddenoperator;
         mPossibles = null;
@@ -193,7 +193,7 @@ public class GridCage {
             mCells.get(0).mCageText = "" + mResult;
             return;
         }
-        double rand = mContext.mRandom.nextDouble();
+        double rand = mGridView.mRandom.nextDouble();
         double addChance = 0.25;
         double multChance = 0.5;
         if (mCells.size() > 2) {
@@ -363,32 +363,32 @@ public class GridCage {
             for(int x = 0 ; x < 4 ; x++) {
                 cell.mBorderTypes[x] = 0;
             }
-            if (mContext.CageIdAt(cell.mRow-1, cell.mColumn) != mId)
-                if (!mUserMathCorrect && mContext.mBadMaths)
+            if (mGridView.CageIdAt(cell.mRow-1, cell.mColumn) != mId)
+                if (!mUserMathCorrect && mGridView.mBadMaths)
                     cell.mBorderTypes[0] = GridCell.BORDER_WARN;
                 else if (mSelected)
                     cell.mBorderTypes[0] = GridCell.BORDER_CAGE_SELECTED;
                 else
                     cell.mBorderTypes[0] = GridCell.BORDER_SOLID;
 
-            if (mContext.CageIdAt(cell.mRow, cell.mColumn+1) != mId)
-                if(!mUserMathCorrect && mContext.mBadMaths)
+            if (mGridView.CageIdAt(cell.mRow, cell.mColumn+1) != mId)
+                if(!mUserMathCorrect && mGridView.mBadMaths)
                     cell.mBorderTypes[1] = GridCell.BORDER_WARN;
                 else if (mSelected)
                     cell.mBorderTypes[1] = GridCell.BORDER_CAGE_SELECTED;
                 else
                     cell.mBorderTypes[1] = GridCell.BORDER_SOLID;
 
-            if (mContext.CageIdAt(cell.mRow+1, cell.mColumn) != mId)
-                if(!mUserMathCorrect && mContext.mBadMaths)
+            if (mGridView.CageIdAt(cell.mRow+1, cell.mColumn) != mId)
+                if(!mUserMathCorrect && mGridView.mBadMaths)
                     cell.mBorderTypes[2] = GridCell.BORDER_WARN;
                 else if (mSelected)
                     cell.mBorderTypes[2] = GridCell.BORDER_CAGE_SELECTED;
                 else
                     cell.mBorderTypes[2] = GridCell.BORDER_SOLID;
 
-            if (mContext.CageIdAt(cell.mRow, cell.mColumn-1) != mId)
-                if(!mUserMathCorrect && mContext.mBadMaths)
+            if (mGridView.CageIdAt(cell.mRow, cell.mColumn-1) != mId)
+                if(!mUserMathCorrect && mGridView.mBadMaths)
                     cell.mBorderTypes[3] = GridCell.BORDER_WARN;
                 else if (mSelected)
                     cell.mBorderTypes[3] = GridCell.BORDER_CAGE_SELECTED;
@@ -420,8 +420,8 @@ public class GridCage {
         }
 
         if (mCells.size() == 2) {
-            for (int i1=1; i1<=mContext.mGridSize; i1++)
-                for (int i2=i1+1; i2<=mContext.mGridSize; i2++)
+            for (int i1=1; i1<=mGridView.mGridSize; i1++)
+                for (int i2=i1+1; i2<=mGridView.mGridSize; i2++)
                     if (i2 - i1 == mResult || i1 - i2 == mResult || mResult*i1 == i2 || mResult*i2 == i1 || i1+i2 == mResult || i1*i2 == mResult) {
                         int numbers[] = {i1, i2};
                         AllResults.add(numbers);
@@ -432,10 +432,10 @@ public class GridCage {
         }
 
         // ACTION_ADD:
-        AllResults = getalladdcombos(mContext.mGridSize,mResult,mCells.size());
+        AllResults = getalladdcombos(mGridView.mGridSize,mResult,mCells.size());
 
         // ACTION_MULTIPLY:
-        ArrayList<int[]> multResults = getallmultcombos(mContext.mGridSize,mResult,mCells.size());
+        ArrayList<int[]> multResults = getallmultcombos(mGridView.mGridSize,mResult,mCells.size());
 
         // Combine Add & Multiply result sets
         for (int[] possibleset: multResults)
@@ -470,8 +470,8 @@ public class GridCage {
                 break;
             case ACTION_SUBTRACT:
                 assert(mCells.size() == 2);
-                for (int i1=1; i1<=mContext.mGridSize; i1++)
-                    for (int i2=i1+1; i2<=mContext.mGridSize; i2++)
+                for (int i1=1; i1<=mGridView.mGridSize; i1++)
+                    for (int i2=i1+1; i2<=mGridView.mGridSize; i2++)
                         if (i2 - i1 == mResult || i1 - i2 == mResult) {
                             int numbers[] = {i1, i2};
                             AllResults.add(numbers);
@@ -481,8 +481,8 @@ public class GridCage {
                 break;
             case ACTION_DIVIDE:
                 assert(mCells.size() == 2);
-                for (int i1=1; i1<=mContext.mGridSize; i1++)
-                    for (int i2=i1+1; i2<=mContext.mGridSize; i2++)
+                for (int i1=1; i1<=mGridView.mGridSize; i1++)
+                    for (int i2=i1+1; i2<=mGridView.mGridSize; i2++)
                         if (mResult*i1 == i2 || mResult*i2 == i1) {
                             int numbers[] = {i1, i2};
                             AllResults.add(numbers);
@@ -491,10 +491,10 @@ public class GridCage {
                         }
                 break;
             case ACTION_ADD:
-                AllResults = getalladdcombos(mContext.mGridSize,mResult,mCells.size());
+                AllResults = getalladdcombos(mGridView.mGridSize,mResult,mCells.size());
                 break;
             case ACTION_MULTIPLY:
-                AllResults = getallmultcombos(mContext.mGridSize,mResult,mCells.size());
+                AllResults = getallmultcombos(mGridView.mGridSize,mResult,mCells.size());
                 break;
         }
         return AllResults;
@@ -591,15 +591,15 @@ public class GridCage {
      */
     private boolean satisfiesConstraints(int[] test_nums) {
 
-        boolean constraints[] = new boolean[mContext.mGridSize*mContext.mGridSize*2];
+        boolean constraints[] = new boolean[mGridView.mGridSize*mGridView.mGridSize*2];
         int constraint_num;
         for (int i = 0; i<mCells.size(); i++) {
-            constraint_num = mContext.mGridSize*(test_nums[i]-1) + mCells.get(i).mColumn;
+            constraint_num = mGridView.mGridSize*(test_nums[i]-1) + mCells.get(i).mColumn;
             if (constraints[constraint_num])
                 return false;
             else
                 constraints[constraint_num]= true;
-            constraint_num = mContext.mGridSize*mContext.mGridSize + mContext.mGridSize*(test_nums[i]-1) + mCells.get(i).mRow;
+            constraint_num = mGridView.mGridSize*mGridView.mGridSize + mGridView.mGridSize*(test_nums[i]-1) + mCells.get(i).mRow;
             if (constraints[constraint_num])
                 return false;
             else
