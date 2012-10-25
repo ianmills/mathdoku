@@ -455,7 +455,7 @@ public class GridView extends View implements OnTouchListener  {
             canvas.drawLine(0, pos, mCurrentWidth, pos, mGridPaint);
             canvas.drawLine(pos, 0, pos, mCurrentWidth, mGridPaint);
         }
-        if (mSelectedCell != null) {
+        if (mSelectedCell != null && digits != null) {
             setPressedStates();
         }
 
