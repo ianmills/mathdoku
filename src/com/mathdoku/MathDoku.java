@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -57,6 +59,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
     private static final int CLEAR_GRID = 104;
     private static final int SHOW_SOLUTION = 105;
     private static final int POPULATE_MAYBES = 106;
+    private static final int SHOW_FACTORS = 107;
     private static final int LOAD_GAME = 7;
 
     private GridView kenKenGrid;
@@ -262,6 +265,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
                 showUseMaybes = true;
             }
         }
+        GridCage cage = kenKenGrid.mCages.get(kenKenGrid.mSelectedCell.mCageId);
 
         menu.add(3, SHOW_SOLUTION, 0, R.string.context_menu_show_solution);
         menu.add(0, REVEAL_CELL, 0,  R.string.context_menu_reveal_cell);
@@ -273,6 +277,9 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
 
         menu.add(0, CLEAR_GRID, 0,  R.string.context_menu_clear_grid);
         menu.add(0, POPULATE_MAYBES, 0, R.string.context_menu_populate_maybes);
+        if (cage.mAction == GridCage.ACTION_MULTIPLY) {
+            menu.add(0, SHOW_FACTORS, 0, R.string.context_menu_show_factors);
+        }
         menu.setHeaderTitle(R.string.application_name);
 
     }
@@ -329,6 +336,29 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
                 }
                 kenKenGrid.invalidate();
                 break;
+
+            case SHOW_FACTORS:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.factors);
+                GridCage cage = kenKenGrid.mCages.get(kenKenGrid.mSelectedCell.mCageId);
+                int value = 1;
+                if (cage.mAction == GridCage.ACTION_MULTIPLY) {
+                    value = cage.mResult;
+                }
+                String message = Integer.toString(value) + ": ";
+
+                for (int i=2;i<=kenKenGrid.mGridSize;i++) {
+                    if (value % i == 0) {
+                        message += Integer.toString(i) + " ";
+                    }
+                }
+                builder.setMessage(message);
+
+                AlertDialog d = builder.create();
+
+                d.show();
+                break;
+
 
         }
         return super.onContextItemSelected(item);

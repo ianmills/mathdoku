@@ -7,6 +7,7 @@
 	<string name="in_english">(in English)</string>
 	<!-- The visibility of the texts above. Should be 2 in English and 0 in all non-English translations. -->
 	<integer name="in_english_visibility">2</integer>
+    <string name="factors">Factors</string>
 	<!-- The different grid sizes with their difficulties. -->
 	<string name="grid_size_4">4x4 (easy)</string>
 	<string name="grid_size_5">5x5 (medium)</string>
@@ -96,6 +97,7 @@
 	<!-- The context menu to show the completed grid. -->
 	<string name="context_menu_show_solution">Show solution</string>
 	<string name="context_menu_populate_maybes">Populate Maybes</string>
+	<string name="context_menu_show_factors">Show Factors</string>
 	<!-- The confirmation message that shows up when the clear grid context menu item is selected, plus the associated title and button labels. -->
 	<string name="context_menu_clear_grid_confirmation_message">Are you sure you want to clear the entire grid?</string>
 	<string name="context_menu_clear_grid_confirmation_title">Clear entire grid?</string>
