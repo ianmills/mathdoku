@@ -25,7 +25,6 @@ import android.graphics.DashPathEffect;
 import android.graphics.DiscretePathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.graphics.Typeface;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -67,7 +66,6 @@ public class GridView extends View implements OnTouchListener  {
     public Paint mBorderPaint;
     public int mBackgroundColor;
 
-    public Typeface mFace;
     public boolean mDupedigits;
     public boolean mBadMaths;
     public boolean hideselector = false;
