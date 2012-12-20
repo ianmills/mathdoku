@@ -145,6 +145,7 @@ public class MathDoku extends Activity implements OnSharedPreferenceChangeListen
         if (kenKenGrid.Restore(savegamename)) {
             setButtonVisibility(kenKenGrid.mGridSize);
             kenKenGrid.setActive(true);
+            kenKenGrid.onResume(getActionBar());
         }
     }
 

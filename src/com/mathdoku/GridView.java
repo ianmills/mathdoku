@@ -53,7 +53,7 @@ public class GridView extends View implements OnTouchListener, Runnable  {
     public ArrayList<GridCage> mCages;
     public ArrayList<GridCell> mCells;
 
-    private boolean mActive;
+    private boolean mActive = false;
     private boolean paused = true;
     public boolean mSelectorShown = false;
     public boolean markInvalidMaybes = false;
@@ -134,7 +134,10 @@ public class GridView extends View implements OnTouchListener, Runnable  {
     }
 
     public void onPause() {
-        mDuration = System.currentTimeMillis() - mStartTime;
+        if (mActive && !isSolved()) {
+            mDuration = System.currentTimeMillis() - mStartTime;
+        }
+        mHandler = null;
         paused = true;
     }
 
@@ -142,17 +145,24 @@ public class GridView extends View implements OnTouchListener, Runnable  {
         mActionBar = ab;
         mStartTime = System.currentTimeMillis() - mDuration;
         mHandler = new Handler();
-        mHandler.postDelayed(this, 1000);
+        if (isActive()) {
+            mHandler.postDelayed(this, 0);
+        }
         paused = false;
     }
 
     @Override
     public void run() {
-        mDuration = System.currentTimeMillis() - mStartTime;
-        mActionBar.setSubtitle(DateUtils.formatElapsedTime(mDuration/1000));
-        if (!paused) {
-            mHandler.postDelayed(this, 1000);
+        if (!mActive) {
+            return;
         }
+        if (!isSolved()) {
+            mDuration = System.currentTimeMillis() - mStartTime;
+            if (!paused) {
+                mHandler.postDelayed(this, 1000);
+            }
+        }
+        mActionBar.setSubtitle(DateUtils.formatElapsedTime(mDuration/1000));
     }
 
     public boolean clearInvalidPossibles() {
@@ -200,6 +210,7 @@ public class GridView extends View implements OnTouchListener, Runnable  {
         } while (num_solns > 1);
         Log.d ("MathDoku", "Num Attempts = " + num_attempts);
         setActive(true);
+        mHandler.postDelayed(this, 0);
         mSelectorShown = false;
     }
 
@@ -666,6 +677,9 @@ public class GridView extends View implements OnTouchListener, Runnable  {
 
     // Returns whether the puzzle is solved.
     public boolean isSolved() {
+        if (mCells == null) {
+            return false;
+        }
         for (GridCell cell : mCells)
             if (!cell.isUserValueCorrect())
                 return false;
@@ -746,7 +760,9 @@ public class GridView extends View implements OnTouchListener, Runnable  {
             writer.write(mGridSize + "\n");
             writer.write(isActive() + "\n");
             writer.write("Duration:");
-            mDuration = now - mStartTime;
+            if (!isSolved()) {
+                mDuration = now - mStartTime;
+            }
             writer.write(Long.toString(mDuration/1000) + "\n");
             for (GridCell cell : mCells) {
                 writeCell(cell);
