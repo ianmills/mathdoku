@@ -11,8 +11,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.TimerTask;
-import java.util.Timer;
 
 import com.mathdoku.DLX.SolveType;
 import com.mathdoku.MathDokuDLX;
@@ -23,23 +21,24 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.DiscretePathEffect;
-import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Paint;
+import android.os.Handler;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.Button;
 import android.view.SoundEffectConstants;
+import android.view.View.OnTouchListener;
+import android.view.View;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.Animation.AnimationListener;
-import android.view.View;
-import android.view.View.OnTouchListener;
-import android.widget.TextView;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
-public class GridView extends View implements OnTouchListener  {
+public class GridView extends View implements OnTouchListener, Runnable  {
 
     public Button digits[];
     public LinearLayout controls;
@@ -55,6 +54,7 @@ public class GridView extends View implements OnTouchListener  {
     public ArrayList<GridCell> mCells;
 
     private boolean mActive;
+    private boolean paused = true;
     public boolean mSelectorShown = false;
     public boolean markInvalidMaybes = false;
     public boolean maybe3x3 = false;
@@ -72,9 +72,9 @@ public class GridView extends View implements OnTouchListener  {
 
     // Date of current game (used for saved games)
     public long mDate;
-    private Timer mTimer;
-    private TimerTask mTimerTask;
-    public int game_duration;
+    private Handler mHandler;
+    public long mDuration = 0;
+    public long mStartTime = 0;
 
     private String mFilename;
     private BufferedWriter writer = null;
@@ -99,8 +99,7 @@ public class GridView extends View implements OnTouchListener  {
     private void initGridView() {
         mDupedigits = true;
         mBadMaths = true;
-        game_duration = 0;
-        mTimer = new Timer();
+        mStartTime = System.currentTimeMillis();
 
         outAnimation = AnimationUtils.loadAnimation(mContext, R.anim.selectorzoomout);
         outAnimation.setAnimationListener(new AnimationListener() {
@@ -135,33 +134,26 @@ public class GridView extends View implements OnTouchListener  {
     }
 
     public void onPause() {
-        mTimerTask.cancel();
-        mTimer.purge();
-        mTimerTask = null;
+        mDuration = System.currentTimeMillis() - mStartTime;
+        paused = true;
     }
 
     public void onResume(ActionBar ab) {
         mActionBar = ab;
-        mTimerTask = new MathDokuTimerTask();
-        mTimer.scheduleAtFixedRate(mTimerTask, 1000, 1000);
+        mStartTime = System.currentTimeMillis() - mDuration;
+        mHandler = new Handler();
+        mHandler.postDelayed(this, 1000);
+        paused = false;
     }
 
-    public class MathDokuTimerTask extends TimerTask {
-        public MathDokuTimerTask() {
+    @Override
+    public void run() {
+        mDuration = System.currentTimeMillis() - mStartTime;
+        mActionBar.setSubtitle(DateUtils.formatElapsedTime(mDuration/1000));
+        if (!paused) {
+            mHandler.postDelayed(this, 1000);
         }
-
-        @Override
-        public void run() {
-            if (mActive) {
-                game_duration++;
-                post(new Runnable() {
-                    public void run() {
-                        mActionBar.setSubtitle(DateUtils.formatElapsedTime(game_duration));
-                    }
-                });
-            }
-        }
-    };
+    }
 
     public boolean clearInvalidPossibles() {
         boolean isChanged = false;
@@ -188,7 +180,7 @@ public class GridView extends View implements OnTouchListener  {
         int num_solns;
         int num_attempts = 0;
         setActive(false);
-        game_duration = 0;
+        mStartTime = System.currentTimeMillis();
         mRandom = new Random();
         if (mGridSize < 4) return;
         do {
@@ -754,7 +746,8 @@ public class GridView extends View implements OnTouchListener  {
             writer.write(mGridSize + "\n");
             writer.write(isActive() + "\n");
             writer.write("Duration:");
-            writer.write(Integer.toString(game_duration) + "\n");
+            mDuration = now - mStartTime;
+            writer.write(Long.toString(mDuration/1000) + "\n");
             for (GridCell cell : mCells) {
                 writeCell(cell);
             }
@@ -877,7 +870,9 @@ public class GridView extends View implements OnTouchListener  {
             while ((line = br.readLine()) != null) {
                 if (line.startsWith("Duration")) {
                     String parts[] = line.split(":");
-                    game_duration = Integer.parseInt(parts[1]);
+                    mDuration = Long.parseLong(parts[1]);
+                    mDuration *= 1000;
+                    mStartTime = System.currentTimeMillis() - mDuration;
                     continue;
                 }
                 if (line.startsWith("CELL:")) {
